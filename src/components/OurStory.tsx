@@ -1,7 +1,7 @@
 const milestones = [
   {
     label: "How We Met",
-    text: "Tell your story here — where you first crossed paths and what made that moment special.",
+    text: "It started on the climbing wall at ROX BGC. Two strangers, both looking for a belay partner, both too stubborn to climb with just anyone. A mutual friend made the introduction, and somewhere between checking harnesses and calling out beta, we forgot we were supposed to be strangers.",
   },
   {
     label: "The Proposal",
