@@ -21,10 +21,10 @@ export default function Hero() {
       </h1>
 
       <p className="font-sans text-sm tracking-[0.25em] uppercase text-[#2C2C2C]/60 mb-14">
-        September 20, 2026 &nbsp;·&nbsp; Manila, Philippines
+        January 20, 2027 &nbsp;·&nbsp; Batangas, Philippines
       </p>
 
-      <Countdown targetDate="2026-09-20T16:00:00" />
+      <Countdown targetDate="2027-01-20T15:00:00" />
 
       <div className="w-px h-20 bg-[#B8966E] mx-auto mt-14" />
     </section>

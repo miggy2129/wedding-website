@@ -1,16 +1,16 @@
 const events = [
   {
     title: "Ceremony",
-    time: "4:00 PM",
-    venue: "Venue Name",
-    address: "123 Wedding Lane, Manila, Philippines",
-    note: "Guests are kindly asked to be seated by 3:45 PM.",
+    time: "3:00 PM",
+    venue: "Calaruega Church",
+    address: "Calaruega, Nasugbu, Batangas",
+    note: "Guests are kindly asked to be seated by 2:45 PM.",
   },
   {
     title: "Reception",
-    time: "6:00 PM",
-    venue: "Venue Name",
-    address: "123 Wedding Lane, Manila, Philippines",
+    time: "5:30 PM",
+    venue: "Asador Alfonso",
+    address: "Alfonso, Cavite",
     note: "Dinner, dancing, and celebrating until midnight.",
   },
 ];
@@ -24,7 +24,7 @@ export default function Events() {
         </p>
         <h2 className="font-serif text-5xl md:text-6xl font-light text-[#2C2C2C] mb-3">Events</h2>
         <p className="font-sans text-sm tracking-[0.15em] text-[#2C2C2C]/50 mb-6">
-          September 20, 2026
+          January 20, 2027
         </p>
         <div className="w-10 h-px bg-[#B8966E] mx-auto mb-16" />
 
