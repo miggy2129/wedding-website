@@ -27,8 +27,6 @@ export default function RSVP() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log('form', form)
-
     const results = await postSubmit(form);
 
     if (results.success) {
