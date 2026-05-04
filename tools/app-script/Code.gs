@@ -1,14 +1,4 @@
-const { INDEXES, SHEET, LAST_ROW, LAST_COLUMN, DATA } = initialize();
-// TODO: Remove sample payload when we have API call available
-const SAMPLE_PAYLOAD = {
-  name: "Bettina Mercados",
-  email: "angelabcmercado@gmail.com",
-  phone: "09173285586",
-  invited: "YES",
-  status: "Accepted",
-  notes: ""
-}
-
+const { INDEXES, SHEET, LAST_ROW, LAST_COLUMN, DATA, SECRET_TOKEN } = initialize();
 
 /**
  * Find user from the list of invitees
@@ -62,18 +52,27 @@ function formatPayload(payload, oldData) {
  * 
  * @return JSON
  */
-function update() {
+function doPost(e) {
+  const data = JSON.parse(e.postData.contents);
+
   try {
-    const USER_DATA = this.findUser(SAMPLE_PAYLOAD['name']);
+    // Ensure that the API is only called by the authorized website
+    if (data.token !== SECRET_TOKEN) {
+      const error = new Error("Unauthorized");
+      error.status = 401;
+      throw error;
+    }
+
+    const USER_DATA = this.findUser(data['name']);
     const USER_INDEX = USER_DATA['index'] + 1; // Row counting starts at 1, not 0.
     let user = USER_DATA['user'];
     
-    let payload = this.formatPayload(SAMPLE_PAYLOAD, user);
+    let payload = this.formatPayload(data, user);
 
     let range = SHEET.getRange(`A${USER_INDEX}:K${USER_INDEX}`);
     range.setValues([payload]);
 
-    ContentService.createTextOutput(
+    return ContentService.createTextOutput(
       JSON.stringify({ 
         status: 200, 
         message: 'Successfully updated user details'
@@ -82,10 +81,11 @@ function update() {
     .setMimeType(ContentService.MimeType.JSON);
 
   } catch(error) {
-    ContentService.createTextOutput(
+    return ContentService.createTextOutput(
       JSON.stringify({ 
         status: error.status ?? 400,
-        message: error.message
+        message: error.message ?? error.toString(),
+        name: data.name
       })
     )
     .setMimeType(ContentService.MimeType.JSON);
