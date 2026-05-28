@@ -1,13 +1,7 @@
 "use client";
 import { useState } from "react";
-
-type FormState = {
-  name: string;
-  email: string;
-  attending: string;
-  guests: string;
-  dietary: string;
-};
+import { postSubmit } from "@/_services/form";
+import { RsvpStatus, FormState } from "@/_types/rsvp";
 
 const inputClass =
   "w-full border border-[#E8D8CC] bg-white px-4 py-3 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-[#B8966E] transition-colors";
@@ -20,19 +14,27 @@ export default function RSVP() {
   const [form, setForm] = useState<FormState>({
     name: "",
     email: "",
-    attending: "yes",
-    guests: "1",
-    dietary: "",
+    phone: "",
+    status: RsvpStatus.accepted,
+    notes: "",
+    dietary: ""
   });
 
   const set = (key: keyof FormState) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: connect to a form backend (e.g. Resend, Supabase, Formspree)
-    setSubmitted(true);
+
+    const results = await postSubmit(form);
+
+    if (results.success) {
+      alert(results.message)
+      setSubmitted(true);
+    } else {
+      alert(results.message);
+    }
   };
 
   return (
@@ -81,25 +83,24 @@ export default function RSVP() {
             </div>
 
             <div>
-              <label className={labelClass}>Will you attend?</label>
-              <select value={form.attending} onChange={set("attending")} className={inputClass}>
-                <option value="yes">Joyfully accepts</option>
-                <option value="no">Regretfully declines</option>
-              </select>
+              <label className={labelClass}>Contact Number</label>
+              <input
+                type="phone"
+                required
+                placeholder="+00 123 456 7890"
+                value={form.phone}
+                onChange={set("phone")}
+                className={inputClass}
+              />
             </div>
 
-            {form.attending === "yes" && (
-              <div>
-                <label className={labelClass}>Number of Guests</label>
-                <select value={form.guests} onChange={set("guests")} className={inputClass}>
-                  {["1", "2", "3", "4"].map((n) => (
-                    <option key={n} value={n}>
-                      {n}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
+            <div>
+              <label className={labelClass}>Will you attend?</label>
+              <select value={form.status} onChange={set("status")} required className={inputClass}>
+                <option value="accepted">Joyfully accepts</option>
+                <option value="declined">Regretfully declines</option>
+              </select>
+            </div>
 
             <div>
               <label className={labelClass}>Dietary Restrictions</label>
@@ -107,6 +108,17 @@ export default function RSVP() {
                 placeholder="None, vegetarian, gluten-free, etc."
                 value={form.dietary}
                 onChange={set("dietary")}
+                rows={3}
+                className={`${inputClass} resize-none`}
+              />
+            </div>
+
+            <div>
+              <label className={labelClass}>Any additional notes or questions?</label>
+              <textarea
+                placeholder="e.g., Song requests, travel questions, or just a sweet note for us!"
+                value={form.notes}
+                onChange={set("notes")}
                 rows={3}
                 className={`${inputClass} resize-none`}
               />
