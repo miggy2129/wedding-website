@@ -97,8 +97,8 @@ export default function RSVP() {
             <div>
               <label className={labelClass}>Will you attend?</label>
               <select value={form.status} onChange={set("status")} required className={inputClass}>
-                <option value="accepted">Joyfully accepts</option>
-                <option value="declined">Regretfully declines</option>
+                <option value={RsvpStatus.accepted}>Joyfully accepts</option>
+                <option value={RsvpStatus.declined}>Regretfully declines</option>
               </select>
             </div>
 
