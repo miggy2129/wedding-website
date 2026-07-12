@@ -4,24 +4,24 @@ import { FormState } from "@/_types/rsvp";
 type FormError = Error & { status?: number };
 
 export async function postSubmit(formData: any) {
-    const FORM_URL = process.env.APPSCRIPT_SECRET_URL;
-
-    if (!FORM_URL) {
-        throw new Error("Missing required ENV variable.");
-    }
-
-    const data: FormState = {
-        name: formData["name"],
-        email: formData["email"],
-        phone: formData["phone"],
-        invited: "YES",
-        status: formData["status"],
-        notes: formData["notes"],
-        dietary: formData["dietary"],
-        token: process.env.APPSCRIPT_SECRET_TOKEN
-    };
-
     try {
+        const FORM_URL = process.env.APPSCRIPT_SECRET_URL;
+
+        if (!FORM_URL) {
+            throw new Error("Missing required ENV variable.");
+        }
+
+        const data: FormState = {
+            name: formData["name"],
+            email: formData["email"],
+            phone: formData["phone"],
+            invited: "YES",
+            status: formData["status"],
+            notes: formData["notes"],
+            dietary: formData["dietary"],
+            token: process.env.APPSCRIPT_SECRET_TOKEN
+        };
+
         const response = await fetch(FORM_URL, {
             method: "POST",
             headers: {
