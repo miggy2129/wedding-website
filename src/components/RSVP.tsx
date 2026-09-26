@@ -6,6 +6,21 @@ import { RsvpStatus, FormState } from "@/_types/rsvp";
 const inputClass =
   "w-full border border-[#E8D8CC] bg-white px-4 py-3 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-[#B8966E] transition-colors";
 
+const invalidInputClass =
+  "w-full border border-[#C97B7B] bg-white px-4 py-3 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-[#9A3B3B] transition-colors";
+
+const errorTextClass = "font-sans text-xs text-[#9A3B3B] mt-2";
+
+const hintTextClass = "font-sans text-xs text-[#2C2C2C]/50 mt-2";
+
+type FieldErrors = { name?: string; email?: string; contact?: boolean };
+
+const errorsClearedBy = {
+  name: ["name"],
+  email: ["email", "contact"],
+  phone: ["contact"],
+} as const;
+
 const labelClass =
   "block font-sans text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] mb-2";
 
@@ -13,6 +28,7 @@ export default function RSVP() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const isSubmittingRef = useRef(false);
   const [form, setForm] = useState<FormState>({
     name: "",
@@ -25,13 +41,48 @@ export default function RSVP() {
 
   const set = (key: keyof FormState) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => setForm((f) => ({ ...f, [key]: e.target.value }));
+  ) => {
+    setForm((f) => ({ ...f, [key]: e.target.value }));
+
+    const cleared = errorsClearedBy[key as keyof typeof errorsClearedBy];
+    if (cleared) {
+      setFieldErrors((prev) => {
+        const next = { ...prev };
+        cleared.forEach((k) => delete next[k]);
+        return next;
+      });
+    }
+  };
+
+  const validate = (): FieldErrors => {
+    const errors: FieldErrors = {};
+    const email = form.email.trim();
+    const phone = form.phone.trim();
+
+    if (!form.name.trim()) errors.name = "Please enter your name.";
+    if (email && !/^\S+@\S+\.\S+$/.test(email)) {
+      errors.email = "Please enter a valid email address.";
+    } else if (!email && !phone) {
+      errors.contact = true;
+    }
+
+    return errors;
+  };
 
   const firstName = form.name.trim().split(" ")[0];
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmittingRef.current) return;
+
+    const errors = validate();
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      setError(null);
+      const first = errors.name ? "rsvp-name" : errors.email ? "rsvp-email" : "rsvp-phone";
+      document.getElementById(first)?.focus();
+      return;
+    }
 
     isSubmittingRef.current = true;
     setIsSubmitting(true);
@@ -79,60 +130,76 @@ export default function RSVP() {
             </p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-5 text-left">
+          <form onSubmit={handleSubmit} noValidate className="space-y-5 text-left">
             <div>
-              <label className={labelClass}>Full Name</label>
+              <label htmlFor="rsvp-name" className={labelClass}>Full Name</label>
               <input
+                id="rsvp-name"
                 type="text"
-                required
                 placeholder="Your name"
                 value={form.name}
                 onChange={set("name")}
-                className={inputClass}
+                aria-invalid={!!fieldErrors.name}
+                aria-describedby={fieldErrors.name ? "rsvp-name-error" : undefined}
+                className={fieldErrors.name ? invalidInputClass : inputClass}
               />
+              {fieldErrors.name && (
+                <p id="rsvp-name-error" className={errorTextClass}>{fieldErrors.name}</p>
+              )}
             </div>
 
             <div>
-              <label className={labelClass}>Email</label>
+              <label htmlFor="rsvp-email" className={labelClass}>Email</label>
               <input
+                id="rsvp-email"
                 type="email"
-                required={!form.phone.trim()}
                 placeholder="your@email.com"
                 value={form.email}
                 onChange={set("email")}
-                className={inputClass}
+                aria-invalid={!!(fieldErrors.email || fieldErrors.contact)}
+                aria-describedby={fieldErrors.email ? "rsvp-email-error" : "rsvp-contact-hint"}
+                className={fieldErrors.email || fieldErrors.contact ? invalidInputClass : inputClass}
               />
+              {fieldErrors.email && (
+                <p id="rsvp-email-error" className={errorTextClass}>{fieldErrors.email}</p>
+              )}
             </div>
 
             <div>
-              <label className={labelClass}>Contact Number</label>
+              <label htmlFor="rsvp-phone" className={labelClass}>Contact Number</label>
               <input
+                id="rsvp-phone"
                 type="tel"
-                required={!form.email.trim()}
                 placeholder="+00 123 456 7890"
                 value={form.phone}
                 onChange={set("phone")}
-                className={inputClass}
+                aria-invalid={!!fieldErrors.contact}
+                aria-describedby="rsvp-contact-hint"
+                className={fieldErrors.contact ? invalidInputClass : inputClass}
               />
-              <p className="font-sans text-xs text-[#2C2C2C]/50 mt-2">
+              <p
+                id="rsvp-contact-hint"
+                className={fieldErrors.contact ? errorTextClass : hintTextClass}
+              >
                 Please provide at least an email or a contact number.
               </p>
             </div>
 
             <div>
-              <label className={labelClass}>Will you attend?</label>
-              <select value={form.status} onChange={set("status")} required className={inputClass}>
+              <label htmlFor="rsvp-status" className={labelClass}>Will you attend?</label>
+              <select id="rsvp-status" value={form.status} onChange={set("status")} className={inputClass}>
                 <option value={RsvpStatus.accepted}>Joyfully accepts</option>
                 <option value={RsvpStatus.declined}>Regretfully declines</option>
               </select>
             </div>
 
             <div>
-              <label className={labelClass}>
+              <label htmlFor="rsvp-dietary" className={labelClass}>
                 Dietary Restrictions{" "}
                 <span className="normal-case tracking-normal text-[#2C2C2C]/50">(optional)</span>
               </label>
               <textarea
+                id="rsvp-dietary"
                 placeholder="None, vegetarian, gluten-free, etc."
                 value={form.dietary}
                 onChange={set("dietary")}
@@ -142,11 +209,12 @@ export default function RSVP() {
             </div>
 
             <div>
-              <label className={labelClass}>
+              <label htmlFor="rsvp-notes" className={labelClass}>
                 Any additional notes or questions?{" "}
                 <span className="normal-case tracking-normal text-[#2C2C2C]/50">(optional)</span>
               </label>
               <textarea
+                id="rsvp-notes"
                 placeholder="e.g., Song requests, travel questions, or just a sweet note for us!"
                 value={form.notes}
                 onChange={set("notes")}
