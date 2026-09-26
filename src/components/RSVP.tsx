@@ -1,13 +1,7 @@
 "use client";
-import { useState } from "react";
-
-type FormState = {
-  name: string;
-  email: string;
-  attending: string;
-  guests: string;
-  dietary: string;
-};
+import { useRef, useState } from "react";
+import { postSubmit } from "@/_services/form";
+import { RsvpStatus, FormState } from "@/_types/rsvp";
 
 const inputClass =
   "w-full border border-[#E8D8CC] bg-white px-4 py-3 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-[#B8966E] transition-colors";
@@ -17,22 +11,44 @@ const labelClass =
 
 export default function RSVP() {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmittingRef = useRef(false);
   const [form, setForm] = useState<FormState>({
     name: "",
     email: "",
-    attending: "yes",
-    guests: "1",
-    dietary: "",
+    phone: "",
+    status: RsvpStatus.accepted,
+    notes: "",
+    dietary: ""
   });
 
   const set = (key: keyof FormState) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const firstName = form.name.trim().split(" ")[0];
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: connect to a form backend (e.g. Resend, Supabase, Formspree)
-    setSubmitted(true);
+    if (isSubmittingRef.current) return;
+
+    isSubmittingRef.current = true;
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const results = await postSubmit(form);
+
+      if (results.success) {
+        setSubmitted(true);
+      } else {
+        setError(results.message);
+      }
+    } finally {
+      isSubmittingRef.current = false;
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -49,9 +65,17 @@ export default function RSVP() {
 
         {submitted ? (
           <div className="py-20">
-            <p className="font-serif text-4xl font-light text-[#2C2C2C] mb-4">Thank you!</p>
+            <p className="font-serif text-4xl font-light text-[#2C2C2C] mb-4">
+              {form.status === RsvpStatus.declined
+                ? "We'll miss you!"
+                : firstName
+                ? `Thank you, ${firstName}!`
+                : "Thank you!"}
+            </p>
             <p className="font-sans text-sm text-[#2C2C2C]/60">
-              We can&apos;t wait to celebrate with you.
+              {form.status === RsvpStatus.declined
+                ? "Thank you for letting us know — you'll be in our thoughts on the big day."
+                : "We can't wait to celebrate with you on January 20, 2027."}
             </p>
           </div>
         ) : (
@@ -81,25 +105,24 @@ export default function RSVP() {
             </div>
 
             <div>
-              <label className={labelClass}>Will you attend?</label>
-              <select value={form.attending} onChange={set("attending")} className={inputClass}>
-                <option value="yes">Joyfully accepts</option>
-                <option value="no">Regretfully declines</option>
-              </select>
+              <label className={labelClass}>Contact Number</label>
+              <input
+                type="phone"
+                required
+                placeholder="+00 123 456 7890"
+                value={form.phone}
+                onChange={set("phone")}
+                className={inputClass}
+              />
             </div>
 
-            {form.attending === "yes" && (
-              <div>
-                <label className={labelClass}>Number of Guests</label>
-                <select value={form.guests} onChange={set("guests")} className={inputClass}>
-                  {["1", "2", "3", "4"].map((n) => (
-                    <option key={n} value={n}>
-                      {n}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
+            <div>
+              <label className={labelClass}>Will you attend?</label>
+              <select value={form.status} onChange={set("status")} required className={inputClass}>
+                <option value={RsvpStatus.accepted}>Joyfully accepts</option>
+                <option value={RsvpStatus.declined}>Regretfully declines</option>
+              </select>
+            </div>
 
             <div>
               <label className={labelClass}>Dietary Restrictions</label>
@@ -112,11 +135,29 @@ export default function RSVP() {
               />
             </div>
 
+            <div>
+              <label className={labelClass}>Any additional notes or questions?</label>
+              <textarea
+                placeholder="e.g., Song requests, travel questions, or just a sweet note for us!"
+                value={form.notes}
+                onChange={set("notes")}
+                rows={3}
+                className={`${inputClass} resize-none`}
+              />
+            </div>
+
+            {error && (
+              <p className="font-sans text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3">
+                {error}
+              </p>
+            )}
+
             <button
               type="submit"
-              className="w-full bg-[#B8966E] text-white font-sans text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-[#2C2C2C] transition-colors cursor-pointer"
+              disabled={isSubmitting}
+              className="w-full bg-[#B8966E] text-white font-sans text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-[#2C2C2C] transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-[#B8966E]"
             >
-              Send RSVP
+              {isSubmitting ? "Sending..." : "Send RSVP"}
             </button>
           </form>
         )}
