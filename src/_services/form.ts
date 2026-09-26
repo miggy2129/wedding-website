@@ -65,6 +65,10 @@ export async function postSubmit(formData: FormState) {
             throw formError("Please let us know if you can attend.", 400);
         }
 
+        if (!String(formData?.email ?? "").trim() && !String(formData?.phone ?? "").trim()) {
+            throw formError("Please provide an email or a phone number.", 400);
+        }
+
         const tableUrl = `${AIRTABLE_API_URL}/${baseId}/${encodeURIComponent(tableName)}`;
         const headers = {
             Authorization: `Bearer ${apiKey}`,
