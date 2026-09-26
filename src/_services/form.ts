@@ -88,21 +88,25 @@ export async function postSubmit(formData: FormState) {
             throw formError(NOT_FOUND_MESSAGE, 404);
         }
 
+        // Blank inputs are skipped so they don't wipe existing values (e.g. a "Pending" note).
+        const fields: Record<string, string> = { [FIELDS.status]: status };
+        const optional = {
+            [FIELDS.email]: formData.email,
+            [FIELDS.phone]: formData.phone,
+            [FIELDS.notes]: formData.notes,
+            [FIELDS.dietary]: formData.dietary
+        };
+        for (const [field, value] of Object.entries(optional)) {
+            const trimmed = String(value ?? "").trim();
+            if (trimmed) fields[field] = trimmed;
+        }
+
         // PATCH only touches the fields sent, so columns like "group" are left alone.
         await readAirtableResponse(
             await fetch(`${tableUrl}/${record.id}`, {
                 method: "PATCH",
                 headers,
-                body: JSON.stringify({
-                    fields: {
-                        [FIELDS.email]: formData.email,
-                        [FIELDS.phone]: formData.phone,
-                        [FIELDS.status]: status,
-                        [FIELDS.notes]: formData.notes,
-                        [FIELDS.dietary]: formData.dietary
-                    },
-                    typecast: true
-                })
+                body: JSON.stringify({ fields, typecast: true })
             }),
             "update"
         );
