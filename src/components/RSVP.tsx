@@ -11,6 +11,7 @@ const labelClass =
 
 export default function RSVP() {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>({
     name: "",
     email: "",
@@ -26,14 +27,14 @@ export default function RSVP() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
 
     const results = await postSubmit(form);
 
     if (results.success) {
-      alert(results.message)
       setSubmitted(true);
     } else {
-      alert(results.message);
+      setError(results.message);
     }
   };
 
@@ -123,6 +124,12 @@ export default function RSVP() {
                 className={`${inputClass} resize-none`}
               />
             </div>
+
+            {error && (
+              <p className="font-sans text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3">
+                {error}
+              </p>
+            )}
 
             <button
               type="submit"
