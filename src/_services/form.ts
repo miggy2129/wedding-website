@@ -6,13 +6,15 @@ import {
     RecordUpdate,
     SAVE_FAILED_MESSAGE,
     buildRsvpFields,
-    findGroupMates,
+    findGroupMateIds,
     findGuestByName,
+    findGuestsByIds,
     formError,
     getConfig,
     toStatus,
     updateRecords
 } from "./airtable";
+import { createGroupToken, verifyGroupToken } from "./groupToken";
 
 const SUCCESS_MESSAGE = "Successfully updated user details";
 const EMAIL_PATTERN = /^\S+@\S+\.\S+$/;
@@ -59,8 +61,19 @@ function validateForm(formData: FormState) {
     return { name, status, email, phone, notes: clean(formData.notes), dietary: clean(formData.dietary) };
 }
 
-// Step 1: look the guest up. A guest with group-mates gets the group back
-// to answer for (nothing is written yet); anyone else is saved right away.
+function openGroupToken(config: ReturnType<typeof getConfig>, token: unknown) {
+    const group = verifyGroupToken(token, config.signingSecret);
+
+    if (!group) {
+        throw formError("This has expired. Please submit your details again.", 401);
+    }
+
+    return group;
+}
+
+// Step 1 (2 lookups): find the guest and whether they have group-mates. If so,
+// return a signed token right away (nothing is written yet) so the modal can
+// open while the members load; anyone else is saved immediately.
 export async function postSubmit(formData: FormState): Promise<RsvpResult> {
     try {
         const config = getConfig();
@@ -71,13 +84,16 @@ export async function postSubmit(formData: FormState): Promise<RsvpResult> {
             throw formError(NOT_FOUND_MESSAGE, 404);
         }
 
-        const mates = await findGroupMates(config, guest);
-        if (mates.length > 0) {
+        const mateIds = await findGroupMateIds(config, guest);
+        if (mateIds.length > 0) {
             return {
                 success: true,
                 status: 200,
                 message: "Group found",
-                members: mates.map(({ id, name, status }) => ({ id, name, status }))
+                group: {
+                    token: createGroupToken({ guestId: guest.id, mateIds }, config.signingSecret),
+                    count: mateIds.length
+                }
             };
         }
 
@@ -89,23 +105,45 @@ export async function postSubmit(formData: FormState): Promise<RsvpResult> {
     }
 }
 
-// Step 2: save the first guest and their group-mates in one batch.
+// Step 2 (1 lookup): names and current answers for the group-mates.
+export async function loadGroupMembers(token: string): Promise<RsvpResult> {
+    try {
+        const config = getConfig();
+        const group = openGroupToken(config, token);
+        const mates = await findGuestsByIds(config, group.mateIds);
+
+        return {
+            success: true,
+            status: 200,
+            message: "Members loaded",
+            members: mates.map(({ id, name, status }) => ({ id, name, status }))
+        };
+    } catch (error) {
+        const result = failure(error);
+
+        // Keep the "expired" message; anything else is a failure to load.
+        return result.status === 401
+            ? result
+            : { ...result, message: "We couldn't load your party right now. Please try again." };
+    }
+}
+
+// Step 3: save the first guest and their group-mates in one batch. The token
+// fixes who they may answer for, so only the members are re-read (for the
+// contact details already on file) before the write.
 export async function postGroupSubmit(payload: {
     form: FormState;
+    token: string;
     updates: GroupUpdate[];
 }): Promise<RsvpResult> {
     try {
         const config = getConfig();
         const primary = validateForm(payload?.form);
-
-        const guest = await findGuestByName(config, primary.name);
-        if (!guest) {
-            throw formError(NOT_FOUND_MESSAGE, 404);
-        }
+        const group = openGroupToken(config, payload?.token);
 
         // Only people who really share this guest's group may be updated.
-        const mates = new Map((await findGroupMates(config, guest)).map((mate) => [mate.id, mate]));
-        const records: RecordUpdate[] = [{ id: guest.id, fields: buildRsvpFields(primary) }];
+        const mates = new Map((await findGuestsByIds(config, group.mateIds)).map((mate) => [mate.id, mate]));
+        const records: RecordUpdate[] = [{ id: group.guestId, fields: buildRsvpFields(primary) }];
         const seen = new Set<string>();
 
         for (const update of Array.isArray(payload.updates) ? payload.updates : []) {

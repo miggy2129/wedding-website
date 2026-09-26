@@ -37,6 +37,7 @@ export type Guest = {
 };
 
 export type AirtableConfig = {
+    signingSecret: string;
     headers: Record<string, string>;
     guestsUrl: string;
     groupsUrl: string;
@@ -59,6 +60,7 @@ export function getConfig(): AirtableConfig {
     const tableName = requireEnv("AIRTABLE_TABLE_NAME");
 
     return {
+        signingSecret: apiKey,
         headers: {
             Authorization: `Bearer ${apiKey}`,
             "Content-Type": "application/json"
@@ -116,27 +118,32 @@ export async function findGuestByName(config: AirtableConfig, name: string): Pro
     return body?.records?.[0] ? toGuest(body.records[0]) : null;
 }
 
-// Everyone else linked to the same Group record, in the group's own order.
-export async function findGroupMates(config: AirtableConfig, guest: Guest): Promise<Guest[]> {
-    if (!guest.groupId) return [];
+const RECORD_ID_PATTERN = /^rec[A-Za-z0-9]+$/;
 
-    if (!/^rec[A-Za-z0-9]+$/.test(guest.groupId)) return [];
+// Call 2 of 3: ids of everyone else linked to the guest's Group record.
+export async function findGroupMateIds(config: AirtableConfig, guest: Guest): Promise<string[]> {
+    if (!guest.groupId || !RECORD_ID_PATTERN.test(guest.groupId)) return [];
 
     // The single-record endpoint can't limit fields, so filter the list endpoint by id.
-    const groupParams = new URLSearchParams({
+    const params = new URLSearchParams({
         maxRecords: "1",
         filterByFormula: `RECORD_ID()="${guest.groupId}"`
     });
-    groupParams.append("fields[]", GROUP_GUESTS_FIELD);
-    const group = await request(config, `${config.groupsUrl}?${groupParams}`, {}, "group lookup");
+    params.append("fields[]", GROUP_GUESTS_FIELD);
+    const group = await request(config, `${config.groupsUrl}?${params}`, {}, "group lookup");
 
-    const ids: string[] = (group?.records?.[0]?.fields?.[GROUP_GUESTS_FIELD] ?? []).filter(
-        (id: unknown): id is string => typeof id === "string" && /^rec[A-Za-z0-9]+$/.test(id) && id !== guest.id
+    return (group?.records?.[0]?.fields?.[GROUP_GUESTS_FIELD] ?? []).filter(
+        (id: unknown): id is string => typeof id === "string" && RECORD_ID_PATTERN.test(id) && id !== guest.id
     );
-    if (ids.length === 0) return [];
+}
+
+// Call 3 of 3: details for those guests, in one request however many there are.
+export async function findGuestsByIds(config: AirtableConfig, ids: string[]): Promise<Guest[]> {
+    const valid = ids.filter((id) => RECORD_ID_PATTERN.test(id));
+    if (valid.length === 0) return [];
 
     const params = new URLSearchParams({
-        filterByFormula: `OR(${ids.map((id) => `RECORD_ID()="${id}"`).join(",")})`
+        filterByFormula: `OR(${valid.map((id) => `RECORD_ID()="${id}"`).join(",")})`
     });
     [FIELDS.name, FIELDS.status, FIELDS.email, FIELDS.phone].forEach((field) => params.append("fields[]", field));
 
@@ -146,7 +153,7 @@ export async function findGroupMates(config: AirtableConfig, guest: Guest): Prom
         (body?.records ?? []).map((record: any) => [record.id, toGuest(record)])
     );
 
-    return ids.map((id) => byId.get(id)).filter((mate): mate is Guest => !!mate);
+    return valid.map((id) => byId.get(id)).filter((guest): guest is Guest => !!guest);
 }
 
 export type RecordUpdate = { id: string; fields: Record<string, string> };

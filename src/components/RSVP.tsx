@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import { postSubmit } from "@/_services/form";
-import { RsvpStatus, FormState, GroupMember } from "@/_types/rsvp";
+import { RsvpStatus, FormState } from "@/_types/rsvp";
 import GroupRsvpDialog from "@/components/GroupRsvpDialog";
 
 const inputClass =
@@ -30,7 +30,7 @@ export default function RSVP() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [groupMembers, setGroupMembers] = useState<GroupMember[] | null>(null);
+  const [group, setGroup] = useState<{ token: string; count: number } | null>(null);
   const [groupUpdated, setGroupUpdated] = useState(0);
   const isSubmittingRef = useRef(false);
   const [form, setForm] = useState<FormState>({
@@ -94,8 +94,8 @@ export default function RSVP() {
     try {
       const results = await postSubmit(form);
 
-      if (results.success && results.members?.length) {
-        setGroupMembers(results.members);
+      if (results.success && results.group) {
+        setGroup(results.group);
       } else if (results.success) {
         setSubmitted(true);
       } else {
@@ -251,14 +251,14 @@ export default function RSVP() {
         )}
       </div>
 
-      {groupMembers && (
+      {group && (
         <GroupRsvpDialog
           form={form}
-          members={groupMembers}
-          onBack={() => setGroupMembers(null)}
+          group={group}
+          onBack={() => setGroup(null)}
           onDone={(updatedOthers) => {
             setGroupUpdated(updatedOthers);
-            setGroupMembers(null);
+            setGroup(null);
             setSubmitted(true);
           }}
         />

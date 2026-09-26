@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { postGroupSubmit } from "@/_services/form";
-import { FormState, GroupMember, GroupUpdate, RsvpStatus } from "@/_types/rsvp";
+import { loadGroupMembers, postGroupSubmit } from "@/_services/form";
+import { FormState, GroupMember, GroupUpdate, RsvpResult, RsvpStatus } from "@/_types/rsvp";
 
 const inputClass =
   "w-full border border-[#E8D8CC] bg-white px-3 py-2 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-[#B8966E] transition-colors";
@@ -18,7 +18,7 @@ type Row = Omit<GroupUpdate, "id">;
 
 type Props = {
   form: FormState;
-  members: GroupMember[];
+  group: { token: string; count: number };
   onBack: () => void;
   onDone: (updatedOthers: number) => void;
 };
@@ -28,17 +28,57 @@ const toggleOptions = [
   { value: RsvpStatus.declined, label: "Declines" },
 ] as const;
 
-export default function GroupRsvpDialog({ form, members, onBack, onDone }: Props) {
+export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const isSubmittingRef = useRef(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [emailErrors, setEmailErrors] = useState<Record<string, string>>({});
-  const [rows, setRows] = useState<Record<string, Row>>(() =>
-    Object.fromEntries(
-      members.map((m) => [m.id, { status: m.status, email: "", phone: "", dietary: "" }])
-    )
-  );
+  const [members, setMembers] = useState<GroupMember[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loadAttempt, setLoadAttempt] = useState(0);
+  const [rows, setRows] = useState<Record<string, Row>>({});
+
+  // Strict Mode runs effects twice in development; sharing one request per
+  // attempt avoids a wasted (and queued) duplicate server call.
+  const loadRequest = useRef<{ key: string; promise: Promise<RsvpResult> } | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const key = `${group.token}:${loadAttempt}`;
+    if (loadRequest.current?.key !== key) {
+      loadRequest.current = { key, promise: loadGroupMembers(group.token) };
+    }
+
+    loadRequest.current.promise
+      .then((result) => {
+        if (cancelled) return;
+
+        if (result.success && result.members) {
+          setRows(
+            Object.fromEntries(
+              result.members.map((m) => [m.id, { status: m.status, email: "", phone: "", dietary: "" }])
+            )
+          );
+          setMembers(result.members);
+        } else {
+          setLoadError(result.message);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setLoadError("We couldn't load your party. Please try again.");
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [group.token, loadAttempt]);
+
+  const retryLoad = () => {
+    setLoadError(null);
+    setLoadAttempt((attempt) => attempt + 1);
+  };
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -65,7 +105,7 @@ export default function GroupRsvpDialog({ form, members, onBack, onDone }: Props
   };
 
   const handleSave = async () => {
-    if (isSubmittingRef.current) return;
+    if (isSubmittingRef.current || !members) return;
 
     const errors: Record<string, string> = {};
     members.forEach((m) => {
@@ -86,7 +126,7 @@ export default function GroupRsvpDialog({ form, members, onBack, onDone }: Props
 
     try {
       const updates: GroupUpdate[] = members.map((m) => ({ id: m.id, ...rows[m.id] }));
-      const results = await postGroupSubmit({ form, updates });
+      const results = await postGroupSubmit({ form, token: group.token, updates });
 
       if (results.success) {
         onDone(results.updatedOthers ?? 0);
@@ -117,8 +157,42 @@ export default function GroupRsvpDialog({ form, members, onBack, onDone }: Props
         together with anyone you answer for below. Leave someone unset to skip them.
       </p>
 
+      {members === null && !loadError && (
+        <>
+          <p role="status" className="font-sans text-sm text-[#2C2C2C]/60 mb-4">
+            Finding everyone in your party…
+          </p>
+          <ul aria-hidden="true" className="space-y-5">
+            {Array.from({ length: group.count }, (_, i) => (
+              <li key={i} className="border border-[#E8D8CC] bg-white p-5 animate-pulse">
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <div className="h-7 w-40 bg-[#E8D8CC]" />
+                  <div className="flex">
+                    <div className="h-9 w-24 bg-[#F0E6DF]" />
+                    <div className="h-9 w-24 bg-[#F0E6DF]" />
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {loadError && (
+        <div className="font-sans text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3">
+          <p>{loadError}</p>
+          <button
+            type="button"
+            onClick={retryLoad}
+            className="mt-2 underline underline-offset-2 cursor-pointer"
+          >
+            Try again
+          </button>
+        </div>
+      )}
+
       <ul className="space-y-5">
-        {members.map((member) => {
+        {(members ?? []).map((member) => {
           const row = rows[member.id];
 
           return (
@@ -219,7 +293,7 @@ export default function GroupRsvpDialog({ form, members, onBack, onDone }: Props
         <button
           type="button"
           onClick={handleSave}
-          disabled={isSubmitting}
+          disabled={isSubmitting || !members}
           className="flex-1 bg-[#B8966E] text-white font-sans text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-[#2C2C2C] transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-[#B8966E]"
         >
           {isSubmitting ? "Saving..." : "Save RSVP"}

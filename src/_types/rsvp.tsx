@@ -31,6 +31,7 @@ export type RsvpResult = {
   success: boolean;
   status?: number;
   message: string;
+  group?: { token: string; count: number };
   members?: GroupMember[];
   updatedOthers?: number;
 };
