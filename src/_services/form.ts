@@ -7,6 +7,16 @@ const AIRTABLE_API_URL = "https://api.airtable.com/v0";
 const NOT_FOUND_MESSAGE = "We can't seem to find you in the list.";
 const SAVE_FAILED_MESSAGE = "We couldn't save your RSVP right now. Please try again in a moment.";
 
+// Airtable column names (case-sensitive); must match the table's headers.
+const FIELDS = {
+    name: "Name",
+    email: "Email",
+    phone: "Phone",
+    status: "RSVP status",
+    notes: "Notes",
+    dietary: "Dietary Restrictions"
+} as const;
+
 function formError(message: string, status: number): FormError {
     return Object.assign(new Error(message), { status });
 }
@@ -64,9 +74,9 @@ export async function postSubmit(formData: FormState) {
         // Case-insensitive match on the guest's name, returning only the record id.
         const lookupParams = new URLSearchParams({
             maxRecords: "1",
-            filterByFormula: `LOWER(TRIM({name}))="${escapeFormulaString(name.toLowerCase())}"`
+            filterByFormula: `LOWER(TRIM({${FIELDS.name}}))="${escapeFormulaString(name.toLowerCase())}"`
         });
-        lookupParams.append("fields[]", "name");
+        lookupParams.append("fields[]", FIELDS.name);
 
         const lookup = await readAirtableResponse(
             await fetch(`${tableUrl}?${lookupParams}`, { headers }),
@@ -85,11 +95,11 @@ export async function postSubmit(formData: FormState) {
                 headers,
                 body: JSON.stringify({
                     fields: {
-                        email: formData.email,
-                        phone: formData.phone,
-                        status,
-                        notes: formData.notes,
-                        dietary: formData.dietary
+                        [FIELDS.email]: formData.email,
+                        [FIELDS.phone]: formData.phone,
+                        [FIELDS.status]: status,
+                        [FIELDS.notes]: formData.notes,
+                        [FIELDS.dietary]: formData.dietary
                     },
                     typecast: true
                 })
