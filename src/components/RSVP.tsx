@@ -25,6 +25,8 @@ export default function RSVP() {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
+  const firstName = form.name.trim().split(" ")[0];
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
@@ -52,13 +54,27 @@ export default function RSVP() {
 
         {submitted ? (
           <div className="py-20">
-            <p className="font-serif text-4xl font-light text-[#2C2C2C] mb-4">Thank you!</p>
+            <p className="font-serif text-4xl font-light text-[#2C2C2C] mb-4">
+              {form.status === RsvpStatus.declined
+                ? "We'll miss you!"
+                : firstName
+                ? `Thank you, ${firstName}!`
+                : "Thank you!"}
+            </p>
             <p className="font-sans text-sm text-[#2C2C2C]/60">
-              We can&apos;t wait to celebrate with you.
+              {form.status === RsvpStatus.declined
+                ? "Thank you for letting us know — you'll be in our thoughts on the big day."
+                : "We can't wait to celebrate with you on January 20, 2027."}
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5 text-left">
+            {error && (
+              <p className="font-sans text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3">
+                {error}
+              </p>
+            )}
+
             <div>
               <label className={labelClass}>Full Name</label>
               <input
@@ -124,12 +140,6 @@ export default function RSVP() {
                 className={`${inputClass} resize-none`}
               />
             </div>
-
-            {error && (
-              <p className="font-sans text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3">
-                {error}
-              </p>
-            )}
 
             <button
               type="submit"
