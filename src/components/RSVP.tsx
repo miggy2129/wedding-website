@@ -1,7 +1,8 @@
 "use client";
 import { useRef, useState } from "react";
 import { postSubmit } from "@/_services/form";
-import { RsvpStatus, FormState } from "@/_types/rsvp";
+import { RsvpStatus, FormState, GroupMember } from "@/_types/rsvp";
+import GroupRsvpDialog from "@/components/GroupRsvpDialog";
 
 const inputClass =
   "w-full border border-[#E8D8CC] bg-white px-4 py-3 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-[#B8966E] transition-colors";
@@ -29,6 +30,8 @@ export default function RSVP() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [groupMembers, setGroupMembers] = useState<GroupMember[] | null>(null);
+  const [groupUpdated, setGroupUpdated] = useState(0);
   const isSubmittingRef = useRef(false);
   const [form, setForm] = useState<FormState>({
     name: "",
@@ -91,7 +94,9 @@ export default function RSVP() {
     try {
       const results = await postSubmit(form);
 
-      if (results.success) {
+      if (results.success && results.members?.length) {
+        setGroupMembers(results.members);
+      } else if (results.success) {
         setSubmitted(true);
       } else {
         setError(results.message);
@@ -128,6 +133,12 @@ export default function RSVP() {
                 ? "Thank you for letting us know — you'll be in our thoughts on the big day."
                 : "We can't wait to celebrate with you on January 20, 2027."}
             </p>
+            {groupUpdated > 0 && (
+              <p className="font-sans text-sm text-[#2C2C2C]/60 mt-3">
+                We&apos;ve also recorded {groupUpdated} other{" "}
+                {groupUpdated === 1 ? "response" : "responses"} for your party.
+              </p>
+            )}
           </div>
         ) : (
           <form onSubmit={handleSubmit} noValidate className="space-y-5 text-left">
@@ -239,6 +250,19 @@ export default function RSVP() {
           </form>
         )}
       </div>
+
+      {groupMembers && (
+        <GroupRsvpDialog
+          form={form}
+          members={groupMembers}
+          onBack={() => setGroupMembers(null)}
+          onDone={(updatedOthers) => {
+            setGroupUpdated(updatedOthers);
+            setGroupMembers(null);
+            setSubmitted(true);
+          }}
+        />
+      )}
     </section>
   );
 }
