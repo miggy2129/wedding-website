@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { postSubmit } from "@/_services/form";
 import { RsvpStatus, FormState } from "@/_types/rsvp";
 
@@ -12,6 +12,8 @@ const labelClass =
 export default function RSVP() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmittingRef = useRef(false);
   const [form, setForm] = useState<FormState>({
     name: "",
     email: "",
@@ -29,14 +31,23 @@ export default function RSVP() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isSubmittingRef.current) return;
+
+    isSubmittingRef.current = true;
+    setIsSubmitting(true);
     setError(null);
 
-    const results = await postSubmit(form);
+    try {
+      const results = await postSubmit(form);
 
-    if (results.success) {
-      setSubmitted(true);
-    } else {
-      setError(results.message);
+      if (results.success) {
+        setSubmitted(true);
+      } else {
+        setError(results.message);
+      }
+    } finally {
+      isSubmittingRef.current = false;
+      setIsSubmitting(false);
     }
   };
 
@@ -143,9 +154,10 @@ export default function RSVP() {
 
             <button
               type="submit"
-              className="w-full bg-[#B8966E] text-white font-sans text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-[#2C2C2C] transition-colors cursor-pointer"
+              disabled={isSubmitting}
+              className="w-full bg-[#B8966E] text-white font-sans text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-[#2C2C2C] transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-[#B8966E]"
             >
-              Send RSVP
+              {isSubmitting ? "Sending..." : "Send RSVP"}
             </button>
           </form>
         )}
