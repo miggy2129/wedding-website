@@ -80,12 +80,6 @@ export default function RSVP() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5 text-left">
-            {error && (
-              <p className="font-sans text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3">
-                {error}
-              </p>
-            )}
-
             <div>
               <label className={labelClass}>Full Name</label>
               <input
@@ -151,6 +145,12 @@ export default function RSVP() {
                 className={`${inputClass} resize-none`}
               />
             </div>
+
+            {error && (
+              <p className="font-sans text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3">
+                {error}
+              </p>
+            )}
 
             <button
               type="submit"
