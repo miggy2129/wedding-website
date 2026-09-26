@@ -96,7 +96,7 @@ export default function RSVP() {
               <label className={labelClass}>Email</label>
               <input
                 type="email"
-                required
+                required={!form.phone.trim()}
                 placeholder="your@email.com"
                 value={form.email}
                 onChange={set("email")}
@@ -107,13 +107,16 @@ export default function RSVP() {
             <div>
               <label className={labelClass}>Contact Number</label>
               <input
-                type="phone"
-                required
+                type="tel"
+                required={!form.email.trim()}
                 placeholder="+00 123 456 7890"
                 value={form.phone}
                 onChange={set("phone")}
                 className={inputClass}
               />
+              <p className="font-sans text-xs text-[#2C2C2C]/50 mt-2">
+                Please provide at least an email or a contact number.
+              </p>
             </div>
 
             <div>
@@ -125,7 +128,10 @@ export default function RSVP() {
             </div>
 
             <div>
-              <label className={labelClass}>Dietary Restrictions</label>
+              <label className={labelClass}>
+                Dietary Restrictions{" "}
+                <span className="normal-case tracking-normal text-[#2C2C2C]/50">(optional)</span>
+              </label>
               <textarea
                 placeholder="None, vegetarian, gluten-free, etc."
                 value={form.dietary}
@@ -136,7 +142,10 @@ export default function RSVP() {
             </div>
 
             <div>
-              <label className={labelClass}>Any additional notes or questions?</label>
+              <label className={labelClass}>
+                Any additional notes or questions?{" "}
+                <span className="normal-case tracking-normal text-[#2C2C2C]/50">(optional)</span>
+              </label>
               <textarea
                 placeholder="e.g., Song requests, travel questions, or just a sweet note for us!"
                 value={form.notes}
