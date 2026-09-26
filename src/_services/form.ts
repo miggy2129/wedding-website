@@ -1,130 +1,182 @@
 "use server"
-import { FormState, RsvpStatus } from "@/_types/rsvp";
+import { FormState, GroupUpdate, RsvpResult, RsvpStatus } from "@/_types/rsvp";
+import {
+    FormError,
+    NOT_FOUND_MESSAGE,
+    RecordUpdate,
+    SAVE_FAILED_MESSAGE,
+    buildRsvpFields,
+    findGroupMateIds,
+    findGuestByName,
+    findGuestsByIds,
+    formError,
+    getConfig,
+    toStatus,
+    updateRecords
+} from "./airtable";
+import { createGroupToken, verifyGroupToken } from "./groupToken";
 
-type FormError = Error & { status?: number };
+const SUCCESS_MESSAGE = "Successfully updated user details";
+const EMAIL_PATTERN = /^\S+@\S+\.\S+$/;
 
-const AIRTABLE_API_URL = "https://api.airtable.com/v0";
-const NOT_FOUND_MESSAGE = "We can't seem to find you in the list.";
-const SAVE_FAILED_MESSAGE = "We couldn't save your RSVP right now. Please try again in a moment.";
-
-// Airtable column names (case-sensitive); must match the table's headers.
-const FIELDS = {
-    name: "Name",
-    email: "Email",
-    phone: "Phone",
-    status: "RSVP status",
-    notes: "Notes",
-    dietary: "Dietary Restrictions"
-} as const;
-
-function formError(message: string, status: number): FormError {
-    return Object.assign(new Error(message), { status });
+function failure(error: unknown): RsvpResult {
+    return {
+        success: false,
+        status: error instanceof Error && "status" in error ? (error as FormError).status : undefined,
+        message: error instanceof Error ? error.message : String(error)
+    };
 }
 
-function requireEnv(name: string): string {
-    const value = process.env[name];
+function clean(value: unknown): string {
+    return String(value ?? "").trim();
+}
 
-    if (!value) {
-        console.error(`Missing required ENV variable: ${name}`);
-        throw new Error("Missing required ENV variable.");
+function assertEmail(email: string) {
+    if (email && !EMAIL_PATTERN.test(email)) {
+        throw formError("Please enter a valid email address.", 400);
+    }
+}
+
+// Server actions are publicly callable, so re-validate everything the form checks.
+function validateForm(formData: FormState) {
+    const name = clean(formData?.name);
+    const email = clean(formData?.email);
+    const phone = clean(formData?.phone);
+    const status = formData?.status;
+
+    if (!name) {
+        throw formError("Please enter your name.", 400);
     }
 
-    return value;
-}
-
-// Airtable formula strings are double-quoted; escape backslashes and quotes.
-function escapeFormulaString(value: string): string {
-    return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-}
-
-async function readAirtableResponse(response: Response, action: string) {
-    const body = await response.json().catch(() => null);
-
-    if (!response.ok) {
-        console.error(`Airtable ${action} failed`, response.status, JSON.stringify(body));
-        throw formError(SAVE_FAILED_MESSAGE, response.status);
+    if (status !== RsvpStatus.accepted && status !== RsvpStatus.declined) {
+        throw formError("Please let us know if you can attend.", 400);
     }
 
-    return body;
+    if (!email && !phone) {
+        throw formError("Please provide an email or a phone number.", 400);
+    }
+
+    assertEmail(email);
+
+    return { name, status, email, phone, notes: clean(formData.notes), dietary: clean(formData.dietary) };
 }
 
-export async function postSubmit(formData: FormState) {
+function openGroupToken(config: ReturnType<typeof getConfig>, token: unknown) {
+    const group = verifyGroupToken(token, config.signingSecret);
+
+    if (!group) {
+        throw formError("This has expired. Please submit your details again.", 401);
+    }
+
+    return group;
+}
+
+// Step 1 (2 lookups): find the guest and whether they have group-mates. If so,
+// return a signed token right away (nothing is written yet) so the modal can
+// open while the members load; anyone else is saved immediately.
+export async function postSubmit(formData: FormState): Promise<RsvpResult> {
     try {
-        const apiKey = requireEnv("AIRTABLE_KEY");
-        const baseId = requireEnv("AIRTABLE_BASE_ID");
-        const tableName = requireEnv("AIRTABLE_TABLE_NAME");
+        const config = getConfig();
+        const primary = validateForm(formData);
 
-        const name = String(formData?.name ?? "").trim();
-        const status = formData?.status;
-
-        if (!name) {
-            throw formError("Please enter your name.", 400);
-        }
-
-        if (status !== RsvpStatus.accepted && status !== RsvpStatus.declined) {
-            throw formError("Please let us know if you can attend.", 400);
-        }
-
-        if (!String(formData?.email ?? "").trim() && !String(formData?.phone ?? "").trim()) {
-            throw formError("Please provide an email or a phone number.", 400);
-        }
-
-        const tableUrl = `${AIRTABLE_API_URL}/${baseId}/${encodeURIComponent(tableName)}`;
-        const headers = {
-            Authorization: `Bearer ${apiKey}`,
-            "Content-Type": "application/json"
-        };
-
-        // Case-insensitive match on the guest's name, returning only the record id.
-        const lookupParams = new URLSearchParams({
-            maxRecords: "1",
-            filterByFormula: `LOWER(TRIM({${FIELDS.name}}))="${escapeFormulaString(name.toLowerCase())}"`
-        });
-        lookupParams.append("fields[]", FIELDS.name);
-
-        const lookup = await readAirtableResponse(
-            await fetch(`${tableUrl}?${lookupParams}`, { headers }),
-            "lookup"
-        );
-        const record = lookup?.records?.[0];
-
-        if (!record) {
+        const guest = await findGuestByName(config, primary.name);
+        if (!guest) {
             throw formError(NOT_FOUND_MESSAGE, 404);
         }
 
-        // Blank inputs are skipped so they don't wipe existing values (e.g. a "Pending" note).
-        const fields: Record<string, string> = { [FIELDS.status]: status };
-        const optional = {
-            [FIELDS.email]: formData.email,
-            [FIELDS.phone]: formData.phone,
-            [FIELDS.notes]: formData.notes,
-            [FIELDS.dietary]: formData.dietary
-        };
-        for (const [field, value] of Object.entries(optional)) {
-            const trimmed = String(value ?? "").trim();
-            if (trimmed) fields[field] = trimmed;
+        const mateIds = await findGroupMateIds(config, guest);
+        if (mateIds.length > 0) {
+            return {
+                success: true,
+                status: 200,
+                message: "Group found",
+                group: {
+                    token: createGroupToken({ guestId: guest.id, mateIds }, config.signingSecret),
+                    count: mateIds.length
+                }
+            };
         }
 
-        // PATCH only touches the fields sent, so columns like "group" are left alone.
-        await readAirtableResponse(
-            await fetch(`${tableUrl}/${record.id}`, {
-                method: "PATCH",
-                headers,
-                body: JSON.stringify({ fields, typecast: true })
-            }),
-            "update"
-        );
+        await updateRecords(config, [{ id: guest.id, fields: buildRsvpFields(primary) }]);
+
+        return { success: true, status: 200, message: SUCCESS_MESSAGE };
+    } catch (error) {
+        return failure(error);
+    }
+}
+
+// Step 2 (1 lookup): names and current answers for the group-mates.
+export async function loadGroupMembers(token: string): Promise<RsvpResult> {
+    try {
+        const config = getConfig();
+        const group = openGroupToken(config, token);
+        const mates = await findGuestsByIds(config, group.mateIds);
 
         return {
             success: true,
             status: 200,
-            message: "Successfully updated user details"
+            message: "Members loaded",
+            members: mates.map(({ id, name, status }) => ({ id, name, status }))
         };
-    } catch(error) {
-        return {
-            success: false,
-            status: error instanceof Error && "status" in error ? (error as FormError).status : undefined,
-            message: error instanceof Error ? error.message : String(error)
-        };
+    } catch (error) {
+        const result = failure(error);
+
+        // Keep the "expired" message; anything else is a failure to load.
+        return result.status === 401
+            ? result
+            : { ...result, message: "We couldn't load your party right now. Please try again." };
+    }
+}
+
+// Step 3: save the first guest and their group-mates in one batch. The token
+// fixes who they may answer for, so only the members are re-read (for the
+// contact details already on file) before the write.
+export async function postGroupSubmit(payload: {
+    form: FormState;
+    token: string;
+    updates: GroupUpdate[];
+}): Promise<RsvpResult> {
+    try {
+        const config = getConfig();
+        const primary = validateForm(payload?.form);
+        const group = openGroupToken(config, payload?.token);
+
+        // Only people who really share this guest's group may be updated.
+        const mates = new Map((await findGuestsByIds(config, group.mateIds)).map((mate) => [mate.id, mate]));
+        const records: RecordUpdate[] = [{ id: group.guestId, fields: buildRsvpFields(primary) }];
+        const seen = new Set<string>();
+
+        for (const update of Array.isArray(payload.updates) ? payload.updates : []) {
+            const mate = mates.get(update?.id);
+            if (!mate || seen.has(mate.id)) {
+                throw formError(SAVE_FAILED_MESSAGE, 400);
+            }
+            seen.add(mate.id);
+
+            const status = toStatus(update.status);
+            if (!status) continue;
+
+            const email = clean(update.email);
+            const phone = clean(update.phone);
+            assertEmail(email);
+
+            // Without their own details, borrow the first guest's, but never
+            // overwrite contact info that's already on file.
+            records.push({
+                id: mate.id,
+                fields: buildRsvpFields({
+                    status,
+                    email: email || (mate.email ? "" : primary.email),
+                    phone: phone || (mate.phone ? "" : primary.phone),
+                    dietary: clean(update.dietary)
+                })
+            });
+        }
+
+        await updateRecords(config, records);
+
+        return { success: true, status: 200, message: SUCCESS_MESSAGE, updatedOthers: records.length - 1 };
+    } catch (error) {
+        return failure(error);
     }
 }
