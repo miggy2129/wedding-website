@@ -13,7 +13,11 @@ function initialize() {
     phone: null,
     invited: null,
     status: null,
-    notes: null
+    notes: null,
+    // Column I. Assigned by the couple ahead of time (e.g. for seating/family
+    // grouping) — RSVP submissions never include a "group" key, so
+    // formatPayload's oldData fallback in Code.gs preserves it untouched.
+    group: null
   }
 
   // * (starting row, starting column, number of rows, number of columns)
