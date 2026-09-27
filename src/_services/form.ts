@@ -97,7 +97,9 @@ export async function postSubmit(formData: FormState): Promise<RsvpResult> {
             };
         }
 
-        await updateRecords(config, [{ id: guest.id, fields: buildRsvpFields(primary) }]);
+        await updateRecords(config, [
+            { id: guest.id, fields: buildRsvpFields({ ...primary, submittedBy: primary.name }) }
+        ]);
 
         return { success: true, status: 200, message: SUCCESS_MESSAGE };
     } catch (error) {
@@ -143,7 +145,9 @@ export async function postGroupSubmit(payload: {
 
         // Only people who really share this guest's group may be updated.
         const mates = new Map((await findGuestsByIds(config, group.mateIds)).map((mate) => [mate.id, mate]));
-        const records: RecordUpdate[] = [{ id: group.guestId, fields: buildRsvpFields(primary) }];
+        const records: RecordUpdate[] = [
+            { id: group.guestId, fields: buildRsvpFields({ ...primary, submittedBy: primary.name }) }
+        ];
         const seen = new Set<string>();
 
         for (const update of Array.isArray(payload.updates) ? payload.updates : []) {
@@ -166,6 +170,7 @@ export async function postGroupSubmit(payload: {
                 id: mate.id,
                 fields: buildRsvpFields({
                     status,
+                    submittedBy: primary.name,
                     email: email || (mate.email ? "" : primary.email),
                     phone: phone || (mate.phone ? "" : primary.phone),
                     dietary: clean(update.dietary)
