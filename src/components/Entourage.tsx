@@ -24,7 +24,7 @@ const GROOMSMEN_BRIDESMAIDS = [
   ['Katrina Abenojar', 'Elijah Bryce Mojares'],
   ['Melissa Anne Regala', 'Joaquin Nicolas Mercado'],
   ['Angela Bettina Mercado', 'Jaime Magsaysay'],
-  ['Rowhe Rodriguez-Siy', 'Adrian Reyes'],
+  ['Rochelle Ann Rodriguez-Siy', 'Adrian Reyes'],
   ['', 'Julian Bagatsing']
 ];
 
