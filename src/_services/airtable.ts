@@ -17,7 +17,8 @@ export const FIELDS = {
     status: "RSVP status",
     notes: "Notes",
     dietary: "Dietary Restrictions",
-    group: "Group"
+    group: "Group",
+    submittedBy: "RSVP Submitted By"
 } as const;
 const GROUP_GUESTS_FIELD = "Guests in Group";
 
@@ -176,12 +177,16 @@ export async function updateRecords(config: AirtableConfig, records: RecordUpdat
 // Blank inputs are skipped so they don't wipe existing values (e.g. a "Pending" note).
 export function buildRsvpFields(input: {
     status: RsvpStatus;
+    submittedBy: string;
     email?: string;
     phone?: string;
     notes?: string;
     dietary?: string;
 }): Record<string, string> {
-    const fields: Record<string, string> = { [FIELDS.status]: input.status };
+    const fields: Record<string, string> = {
+        [FIELDS.status]: input.status,
+        [FIELDS.submittedBy]: input.submittedBy
+    };
     const optional = {
         [FIELDS.email]: input.email,
         [FIELDS.phone]: input.phone,
