@@ -8,9 +8,30 @@ export type FormState = {
   name: string;
   email: string;
   phone: string;
-  invited?: string;
   status: RsvpStatus;
   notes: string;
   dietary: string;
-  token?: string;
+};
+
+export type GroupMember = {
+  id: string;
+  name: string;
+  status: RsvpStatus | null;
+};
+
+export type GroupUpdate = {
+  id: string;
+  status: RsvpStatus | null;
+  email: string;
+  phone: string;
+  dietary: string;
+};
+
+export type RsvpResult = {
+  success: boolean;
+  status?: number;
+  message: string;
+  group?: { token: string; count: number };
+  members?: GroupMember[];
+  updatedOthers?: number;
 };
