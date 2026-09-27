@@ -60,15 +60,15 @@ export default function Events() {
             className="relative isolate flex min-h-[28rem] items-center justify-center overflow-hidden bg-cover bg-top px-6 py-16 text-center text-white md:min-h-[25rem]"
             style={{ backgroundImage: `url("${location.image}")` }}
           >
-            <div aria-hidden="true" className="absolute inset-0 bg-black/65" />
+            <div aria-hidden="true" className="absolute inset-0 bg-black/70" />
             <div className="relative z-10 max-w-xl">
-              <p className="mb-4 font-lato text-xs uppercase tracking-[0.25em] text-white/80">
-                {location.venue}
-              </p>
               <h2 className="font-serif text-5xl font-light md:text-6xl">
                 {location.title}
               </h2>
-              <p className="mt-4 font-lato text-sm text-white/85">
+               <p className="mt-6 font-lato text-xs uppercase tracking-[0.25em] text-white">
+                {location.venue}
+              </p>
+              <p className="mb-4 font-lato text-sm text-white/85">
                 {location.address}
               </p>
               <p className="mx-auto mt-6 max-w-sm font-lato text-xs leading-relaxed tracking-wide text-white/90">
