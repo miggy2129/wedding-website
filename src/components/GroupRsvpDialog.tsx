@@ -198,7 +198,12 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
           return (
             <li key={member.id} className="border border-[#E8D8CC] bg-white p-5">
               <div className="flex items-center justify-between gap-3 flex-wrap">
-                <p className="font-serif text-2xl font-light">{member.name}</p>
+                <p className="font-serif text-2xl font-light">
+                  {member.name}{" "}
+                  <span className="font-sans text-xs font-normal tracking-normal text-[#2C2C2C]/40">
+                    (optional)
+                  </span>
+                </p>
                 <div
                   role="group"
                   aria-label={`Response for ${member.name}`}
