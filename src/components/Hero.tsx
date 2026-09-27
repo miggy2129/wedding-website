@@ -24,7 +24,7 @@ export default function Hero() {
   return (
     <section id="home" className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-20 text-center">
           <p className="font-sans text-[11px] tracking-[0.35em] uppercase text-(--color-pink) mb-5">
-            We&apos;re getting married
+            We&apos;re getting married (again)
           </p>
 
           <h1 className="font-serif text-7xl md:text-9xl font-light text-[#2C2C2C] leading-none">

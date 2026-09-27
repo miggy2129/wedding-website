@@ -119,6 +119,10 @@ body {
   cursor: url("/images/ginger2.png"), auto;
 }
 
+:is(button, a, input, select, textarea):hover {
+  cursor: url("/images/ginger-hover.png"), auto;
+}
+
 input,
 textarea,
 [contenteditable="true"] {
@@ -251,6 +255,7 @@ textarea,
     bottom: 0;
     width: 100%;
     height: 120px;
+    transform: none;
   }
 
   .side-border-flowers--left .side-border-flower--bottom {
@@ -258,22 +263,33 @@ textarea,
   }
 
   .side-border-flower {
-    width: 110px;
-    max-height: 130px;
+    width: 72px;
+    max-height: 96px;
     object-fit: contain;
   }
 
   .side-border-flower--top {
-    top: 0;
-    left: 8%;
+    top: 20px;
+    left: 28%;
   }
 
   .side-border-flower--bottom {
     top: auto;
-    bottom: 0;
-    left: 62%;
-    width: 110px;
+    bottom: -3px;
+    left: 38%;
+    width: 88px;
     height: auto;
+  }
+
+  .side-border-flowers--right .side-border-flower--top {
+    top: 20px;
+    left: -15%;
+  }
+
+  .side-border-flowers--right .side-border-flower--bottom {
+    right: 12px;
+    bottom: 0;
+    left: auto;
   }
 }
 

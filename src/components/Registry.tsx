@@ -13,13 +13,13 @@ const registries = [
 
 export default function Registry() {
   return (
-    <section id="registry" className="py-28 px-6 bg-(--color-yellow)">
+    <section id="registry" className="py-15 px-6 bg-(--color-yellow)/65">
       <div className="max-w-2xl mx-auto text-center">
-        <p className="font-sans text-[11px] tracking-[0.35em] uppercase text-(--color-pink) mb-4">
+        <p className="font-sans text-[11px] tracking-[0.35em] uppercase text-(--color-green) mb-4">
           A Gift for Us
         </p>
         <h2 className="font-serif text-5xl md:text-6xl font-light text-[#2C2C2C] mb-6">Registry</h2>
-        <div className="w-10 h-px bg-(--color-pink) mx-auto mb-8" />
+        <div className="w-10 h-px bg-(--color-green) mx-auto mb-8" />
         <p className="font-sans text-base text-[#2C2C2C]/65 mb-14 leading-relaxed">
           Your presence is the best gift of all, and all that we ask! Our home is currently overseas and we are not able to carry physical gifts back with us.<br/>
           <br/>

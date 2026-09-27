@@ -56,7 +56,7 @@ export default function Events() {
           Entourage
         </h2>
 
-        <div className="mt-6 mb-12">
+        <div className="mt-6 mb-6">
           <Table>
             <TableHeader>
               <TableRow className="border">
@@ -83,7 +83,7 @@ export default function Events() {
           </Table>
         </div>
         
-        <div className="mt-6 mb-12">
+        <div className="mt-6 mb-6">
           <Table>
             <TableHeader>
               <TableRow className="border">
@@ -105,7 +105,7 @@ export default function Events() {
           </Table>
         </div>
 
-        <div className="mt-6 mb-12">
+        <div className="mt-6 mb-6">
           <Table>
             <TableHeader>
               <TableRow className="border">
@@ -133,7 +133,7 @@ export default function Events() {
           </Table>
         </div>
 
-        <div className="mt-6 mb-12">
+        <div className="mt-6 mb-6">
           <Table>
             <TableHeader>
               <TableRow className="border">
@@ -158,7 +158,7 @@ export default function Events() {
           </Table>
         </div>
 
-        <div className="mt-6 mb-12">
+        <div className="mt-6 mb-6">
           <Table>
             <TableHeader>
               <TableRow className="border">
@@ -177,7 +177,7 @@ export default function Events() {
           </Table>
         </div>
 
-        <div className="mt-6 mb-12">
+        <div className="mt-6 mb-6">
           <Table>
             <TableHeader>
               <TableRow className="border">
@@ -196,7 +196,7 @@ export default function Events() {
           </Table>
         </div>
 
-        <div className="mt-6 mb-12">
+        <div className="mt-6 mb-6">
           <Table>
             <TableHeader>
               <TableRow className="border">
@@ -215,7 +215,7 @@ export default function Events() {
           </Table>
         </div>
 
-        <div className="mt-6 mb-12">
+        <div className="mt-6 mb-6">
           <Table>
             <TableHeader>
               <TableRow className="border">
@@ -234,7 +234,7 @@ export default function Events() {
           </Table>
         </div>
 
-        <div className="mt-6 mb-12">
+        <div className="mt-6 mb-6">
           <Table>
             <TableHeader>
               <TableRow className="border">
