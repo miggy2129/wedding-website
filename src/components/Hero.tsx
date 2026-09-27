@@ -23,8 +23,8 @@ export function HeroBackground() {
 export default function Hero() {
   return (
     <section id="home" className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-20 text-center">
-          <p className="font-sans text-[11px] tracking-[0.35em] uppercase text-(--color-pink) mb-5">
-            We&apos;re getting married (again)
+          <p className="font-lato text-[11px] tracking-[0.35em] uppercase text-(--color-pink) mb-5">
+            We&apos;re getting married (again!)
           </p>
 
           <h1 className="font-serif text-7xl md:text-9xl font-light text-[#2C2C2C] leading-none">
@@ -42,7 +42,7 @@ export default function Hero() {
             </div>
           </h1>
 
-          <p className="font-sans text-xs flex flex-col md:flex-row md:text-sm tracking-[0.25em] uppercase text-[#2C2C2C]/60 mb-14">
+          <p className="font-lato text-xs flex flex-col md:flex-row md:text-sm tracking-[0.25em] uppercase text-[#2C2C2C]/60 mb-14">
             <span>January 20, 2027 &nbsp;·&nbsp;</span> <span>Batangas, Philippines</span>
           </p>
 
@@ -50,11 +50,11 @@ export default function Hero() {
 
           <a
             href="#rsvp"
-            className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center text-center text-(--color-pink)"
+            className="cursor-hover absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center text-center text-(--color-pink)"
           >
-            <span className="mb-0">confirm attendance</span>
-            <ChevronDown aria-hidden="true" size={35} strokeWidth={1.5} className="-mt-2 motion-safe:animate-pulse" />
-            <ChevronDown aria-hidden="true" size={25} strokeWidth={1} className="-mt-5 motion-safe:animate-pulse" />
+            <span className="cursor-hover mb-0">confirm attendance</span>
+            <ChevronDown aria-hidden="true" size={35} strokeWidth={1} className="cursor-hover -mt-0 motion-safe:animate-bounce" />
+            <ChevronDown aria-hidden="true" size={25} strokeWidth={1} className="cursor-hover -mt-5 motion-safe:animate-bounce" />
           </a>
     </section>
   );

@@ -8,10 +8,19 @@ const TOP_FLOWERS = [
   "/images/design/top/flower-yellow-1.png",
 ];
 
+const TOP_RIGHT_FLOWERS = [
+  "/images/design/top/leaves.png",
+  "/images/design/top/flower-pink-5.png",
+  "/images/design/top/leaves.png"
+];
+
+
 const FLOWERS_BOTTOM = [
+  "/images/design/bottom/flower-orange-2.png",
   "/images/design/bottom/flower-yellow-2.png",
+  "/images/design/bottom/flower-orange-2.png",
   "/images/design/bottom/flower-pink-4.png",
-  "/images/design/bottom/flower-orange-3.png"
+  "/images/design/bottom/flower-orange-2.png"
 ]
 
 const SECTION_IDS = [
@@ -70,8 +79,9 @@ export default function SideBorderFlowers({
   }, []);
 
   const sideOffset = side === "right" ? 1 : 0;
+  const topFlowerSet = side === "right" ? TOP_RIGHT_FLOWERS : TOP_FLOWERS;
   const topFlower =
-    TOP_FLOWERS[(sectionIndex + sideOffset) % TOP_FLOWERS.length];
+    topFlowerSet[(sectionIndex + sideOffset) % topFlowerSet.length];
   const bottomFlower =
     FLOWERS_BOTTOM[(sectionIndex + sideOffset) % FLOWERS_BOTTOM.length];
 
@@ -86,6 +96,7 @@ export default function SideBorderFlowers({
         alt=""
         width={160}
         height={160}
+        loading="eager"
         className="side-border-flower side-border-flower--top"
       />
       <Image
@@ -94,6 +105,7 @@ export default function SideBorderFlowers({
         alt=""
         width={160}
         height={160}
+        loading="eager"
         className="side-border-flower side-border-flower--bottom"
       />
     </div>

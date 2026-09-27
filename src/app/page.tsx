@@ -15,9 +15,9 @@ export default function Home() {
         <div className="relative z-10">
           <Hero />
           <Gallery />
+          <Entourage />
           <Events />
           <DressCode />
-          <Entourage />
         </div>
       </div>
       <div className="relative z-10">

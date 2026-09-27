@@ -22,7 +22,7 @@ const MEN = [
 
 export default function DressCode() {
     return (
-        <section id="dress-code" className="bg-(--color-red) text-white">
+        <section id="dress-code" className="bg-(--color-red)/90 text-white">
             <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
                 <h2 className="text-(--color-yellow)">Dress Code</h2>
                 <div className="text-center mx-auto mt-2 mb-5">

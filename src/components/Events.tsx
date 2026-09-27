@@ -62,22 +62,22 @@ export default function Events() {
           >
             <div aria-hidden="true" className="absolute inset-0 bg-black/65" />
             <div className="relative z-10 max-w-xl">
-              <p className="mb-4 font-sans text-xs uppercase tracking-[0.25em] text-white/80">
+              <p className="mb-4 font-lato text-xs uppercase tracking-[0.25em] text-white/80">
                 {location.venue}
               </p>
               <h2 className="font-serif text-5xl font-light md:text-6xl">
                 {location.title}
               </h2>
-              <p className="mt-4 font-sans text-sm text-white/85">
+              <p className="mt-4 font-lato text-sm text-white/85">
                 {location.address}
               </p>
-              <p className="mx-auto mt-6 max-w-sm font-sans text-xs leading-relaxed tracking-wide text-white/90">
+              <p className="mx-auto mt-6 max-w-sm font-lato text-xs leading-relaxed tracking-wide text-white/90">
                 {location.note}
               </p>
               <a
                 href={location.maps}
                 target="_blank"
-                className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/50 px-5 py-3 font-sans text-xs uppercase tracking-widest transition-colors hover:bg-white hover:text-black"
+                className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/50 px-5 py-3 font-lato text-xs uppercase tracking-widest transition-colors hover:bg-white hover:text-black"
               >
                 Check on Google Maps <span aria-hidden="true">→</span>
               </a>
@@ -88,13 +88,13 @@ export default function Events() {
       </section>
       <section id="schedule" className="py-28 px-6 bg-[#FAF8F5]">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="font-sans text-[11px] tracking-[0.35em] uppercase text-(--color-pink) mb-4">
+          <p className="font-lato text-[11px] tracking-[0.35em] uppercase text-(--color-pink) mb-4">
             Mark Your Calendar
           </p>
           <h2 className="font-serif text-5xl md:text-6xl font-light text-[#2C2C2C] mb-3">
             The Itinerary
           </h2>
-          <p className="font-sans text-sm tracking-[0.15em] text-[#2C2C2C]/50 mb-6">
+          <p className="font-lato text-sm tracking-[0.15em] text-[#2C2C2C]/50 mb-6">
             January 20, 2027
           </p>
           <div className="w-10 h-px bg-(--color-pink) mx-auto mb-16" />
@@ -104,10 +104,10 @@ export default function Events() {
             <Image
               src='/images/couple/couple10.jpeg'
               alt="Miguel and Ina"
-              width={350}
-              height={500}
+              width={1666}
+              height={2270}
               loading='lazy'
-              className="w-full object-cover"
+              className="h-auto w-full object-cover"
             />
 
             <ol className="flex flex-col gap-8">
@@ -120,10 +120,10 @@ export default function Events() {
                     <h3 className="mb-2 font-serif text-2xl font-light text-(--color-red)">
                       {event.title}
                     </h3>
-                    <p className="font-sans text-sm leading-relaxed text-[#2C2C2C]/70">
+                    <p className="font-lato text-sm leading-relaxed text-[#2C2C2C]/70">
                       {event.venue}, {event.address}<br/>
                     </p>
-                    <p className="font-sans text-sm leading-relaxed text-[#2C2C2C]/70">
+                    <p className="font-lato text-sm leading-relaxed text-[#2C2C2C]/70">
                       <i>{event.note ? `${event.note}` : ""}</i>
                     </p>
                   </div>

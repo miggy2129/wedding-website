@@ -100,11 +100,11 @@ export default function RSVP() {
       <div className="max-w-7xl mx-auto text-center">
         <div className="grid md:grid-cols-11 gap-5">
           <div className="md:col-span-5 text-left">
-            <p className="font-sans text-[11px] tracking-[0.35em] uppercase text-(--color-pink) mb-4">
+            <p className="font-lato text-[11px] tracking-[0.35em] uppercase text-(--color-pink) mb-4">
               RSVP
             </p>
             <h2 className="font-serif text-5xl md:text-6xl font-light text-[#2C2C2C] mb-6">Tell us if you'll be there.</h2>
-            <p className="font-sans text-sm text-[#2C2C2C]/60 mb-5">
+            <p className="font-lato text-sm text-[#2C2C2C]/60 mb-5">
               While we wish we can accommodate everyone, we kindly ask that only the guests listed on the invitation attend.<br/>
               <br/>
               Please confirm your attendance by <b>October 30th</b>. 
@@ -119,13 +119,13 @@ export default function RSVP() {
                     ? `Thank you, ${firstName}!`
                     : "Thank you!"}
                 </p>
-                <p className="font-sans text-sm text-[#2C2C2C]/60">
+                <p className="font-lato text-sm text-[#2C2C2C]/60">
                   {form.status === RsvpStatus.declined
                     ? "Thank you for letting us know — you'll be in our thoughts on the big day."
                     : "We can't wait to celebrate with you on January 20, 2027."}
                 </p>
                 {groupUpdated > 0 && (
-                  <p className="font-sans text-sm text-[#2C2C2C]/60 mt-3">
+                  <p className="font-lato text-sm text-[#2C2C2C]/60 mt-3">
                     We&apos;ve also recorded {groupUpdated} other{" "}
                     {groupUpdated === 1 ? "response" : "responses"} for your party.
                   </p>
@@ -134,7 +134,7 @@ export default function RSVP() {
             ) : (
                 <form onSubmit={handleSubmit} noValidate className="space-y-5 text-left">
                   <div>
-                    <label htmlFor="rsvp-name" className={`block font-sans text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] mb-2`}>Full Name</label>
+                    <label htmlFor="rsvp-name" className={`block font-lato text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] mb-2`}>Full Name</label>
                     <input
                       id="rsvp-name"
                       type="text"
@@ -143,15 +143,15 @@ export default function RSVP() {
                       onChange={set("name")}
                       aria-invalid={!!fieldErrors.name}
                       aria-describedby={fieldErrors.name ? "rsvp-name-error" : undefined}
-                      className={fieldErrors.name ? `w-full border border-[#C97B7B] bg-white px-4 py-3 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-[#9A3B3B] transition-colors` : `w-full border border-[#E8D8CC] bg-white px-4 py-3 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors`}
+                      className={fieldErrors.name ? `w-full border border-[#C97B7B] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-[#9A3B3B] transition-colors` : `w-full border border-[#E8D8CC] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors`}
                     />
                     {fieldErrors.name && (
-                      <p id="rsvp-name-error" className={`font-sans text-xs text-[#9A3B3B] mt-2`}>{fieldErrors.name}</p>
+                      <p id="rsvp-name-error" className={`font-lato text-xs text-[#9A3B3B] mt-2`}>{fieldErrors.name}</p>
                     )}
                   </div>
 
                   <div>
-                    <label htmlFor="rsvp-email" className={`block font-sans text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] mb-2`}>Email</label>
+                    <label htmlFor="rsvp-email" className={`block font-lato text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] mb-2`}>Email</label>
                     <input
                       id="rsvp-email"
                       type="email"
@@ -160,15 +160,15 @@ export default function RSVP() {
                       onChange={set("email")}
                       aria-invalid={!!(fieldErrors.email || fieldErrors.contact)}
                       aria-describedby={fieldErrors.email ? "rsvp-email-error" : "rsvp-contact-hint"}
-                      className={fieldErrors.email || fieldErrors.contact ? `w-full border border-[#C97B7B] bg-white px-4 py-3 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-[#9A3B3B] transition-colors` : `w-full border border-[#E8D8CC] bg-white px-4 py-3 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors`}
+                      className={fieldErrors.email || fieldErrors.contact ? `w-full border border-[#C97B7B] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-[#9A3B3B] transition-colors` : `w-full border border-[#E8D8CC] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors`}
                     />
                     {fieldErrors.email && (
-                      <p id="rsvp-email-error" className={`font-sans text-xs text-[#9A3B3B] mt-2`}>{fieldErrors.email}</p>
+                      <p id="rsvp-email-error" className={`font-lato text-xs text-[#9A3B3B] mt-2`}>{fieldErrors.email}</p>
                     )}
                   </div>
 
                   <div>
-                    <label htmlFor="rsvp-phone" className={`block font-sans text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] mb-2`}>Contact Number</label>
+                    <label htmlFor="rsvp-phone" className={`block font-lato text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] mb-2`}>Contact Number</label>
                     <input
                       id="rsvp-phone"
                       type="tel"
@@ -177,26 +177,26 @@ export default function RSVP() {
                       onChange={set("phone")}
                       aria-invalid={!!fieldErrors.contact}
                       aria-describedby="rsvp-contact-hint"
-                      className={fieldErrors.contact ? `w-full border border-[#C97B7B] bg-white px-4 py-3 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-[#9A3B3B] transition-colors` : `w-full border border-[#E8D8CC] bg-white px-4 py-3 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors`}
+                      className={fieldErrors.contact ? `w-full border border-[#C97B7B] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-[#9A3B3B] transition-colors` : `w-full border border-[#E8D8CC] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors`}
                     />
                     <p
                       id="rsvp-contact-hint"
-                      className={fieldErrors.contact ? `font-sans text-xs text-[#9A3B3B] mt-2` : `font-sans text-xs text-[#2C2C2C]/50 mt-2`}
+                      className={fieldErrors.contact ? `font-lato text-xs text-[#9A3B3B] mt-2` : `font-lato text-xs text-[#2C2C2C]/50 mt-2`}
                     >
                       Please provide at least an email or a contact number.
                     </p>
                   </div>
 
                   <div>
-                    <label htmlFor="rsvp-status" className={`block font-sans text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] mb-2`}>Will you attend?</label>
-                    <select id="rsvp-status" value={form.status} onChange={set("status")} className={`w-full border border-[#E8D8CC] bg-white px-4 py-3 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors`}>
+                    <label htmlFor="rsvp-status" className={`block font-lato text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] mb-2`}>Will you attend?</label>
+                    <select id="rsvp-status" value={form.status} onChange={set("status")} className={`w-full border border-[#E8D8CC] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors`}>
                       <option value={RsvpStatus.accepted}>Joyfully accepts</option>
                       <option value={RsvpStatus.declined}>Regretfully declines</option>
                     </select>
                   </div>
 
                   <div>
-                    <label htmlFor="rsvp-dietary" className={`block font-sans text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] mb-2`}>
+                    <label htmlFor="rsvp-dietary" className={`block font-lato text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] mb-2`}>
                       Dietary Restrictions{" "}
                       <span className="normal-case tracking-normal text-[#2C2C2C]/50">(optional)</span>
                     </label>
@@ -206,12 +206,12 @@ export default function RSVP() {
                       value={form.dietary}
                       onChange={set("dietary")}
                       rows={3}
-                      className="w-full border border-[#E8D8CC] bg-white px-4 py-3 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors resize-none"
+                      className="w-full border border-[#E8D8CC] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors resize-none"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="rsvp-notes" className={`block font-sans text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] mb-2`}>
+                    <label htmlFor="rsvp-notes" className={`block font-lato text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] mb-2`}>
                       Any additional notes or questions?{" "}
                       <span className="normal-case tracking-normal text-[#2C2C2C]/50">(optional)</span>
                     </label>
@@ -221,12 +221,12 @@ export default function RSVP() {
                       value={form.notes}
                       onChange={set("notes")}
                       rows={3}
-                      className="w-full border border-[#E8D8CC] bg-white px-4 py-3 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors resize-none"
+                      className="w-full border border-[#E8D8CC] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors resize-none"
                     />
                   </div>
 
                   {error && (
-                    <p className="font-sans text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3">
+                    <p className="font-lato text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3">
                       {error}
                     </p>
                   )}
@@ -234,22 +234,24 @@ export default function RSVP() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-(--color-pink) text-white font-sans text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-[#2C2C2C] transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-[#B8966E]"
+                    className="w-full bg-(--color-pink) text-white font-lato text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-[#2C2C2C] transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-[#B8966E]"
                   >
                     {isSubmitting ? "Sending..." : "Send RSVP"}
                   </button>
                 </form>
             )}
           </div>
-          <div className="relative aspect-[4/3] overflow-hidden md:sticky md:top-24 md:col-span-6 md:self-start">
-            <Image
-              src="/images/couple/couple4.jpg"
-              alt="Miguel and Ina"
-              fill
-              loading='lazy'
-              sizes="(min-width: 768px) 40vw, 100vw"
-              className="object-cover object-center"
-            />
+          <div className="md:sticky md:top-24 md:col-span-6 md:self-start">
+            <div className="relative aspect-[4/3] overflow-hidden">
+              <Image
+                src="/images/couple/couple4.jpg"
+                alt="Miguel and Ina"
+                fill
+                loading='lazy'
+                sizes="(min-width: 768px) 40vw, 100vw"
+                className="object-cover object-center"
+              />
+            </div>
           </div>
         </div>
       </div>

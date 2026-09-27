@@ -22,7 +22,7 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   return (
     <thead
       data-slot="table-header"
-      className={cn("[&_tr]:border-b text-lg bg-(--color-orange)", className)}
+      className={cn("border-0 text-lg uppercase", className)}
       {...props}
     />
   )
@@ -43,7 +43,7 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
     <tfoot
       data-slot="table-footer"
       className={cn(
-        "border-t bg-muted/50 font-medium [&>tr]:last:border-b-0",
+        "border-0 bg-muted/50 font-medium",
         className
       )}
       {...props}
@@ -56,7 +56,7 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
     <tr
       data-slot="table-row"
       className={cn(
-        "border transition-colors hover:bg-muted/50 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted text-sm",
+        "border-0 transition-colors hover:bg-muted/50 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted text-xs md:text-sm",
         className
       )}
       {...props}
@@ -69,7 +69,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "p-1 text-center align-middle font-medium whitespace-normal text-foreground [&:has([role=checkbox])]:pr-0",
+        "text-base md:text-lg font-serif text-(--color-red) p-1 text-center align-middle font-bold whitespace-normal [&:has([role=checkbox])]:pr-0",
         className
       )}
       {...props}

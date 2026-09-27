@@ -9,7 +9,6 @@
   --color-border: #E8D8CC;
   --color-charcoal: #2C2C2C;
   --font-serif: var(--font-cormorant), Georgia, serif;
-  --font-sans: var(--font-sans);
 
   --color-cream: #F9F5F0;
   --color-pink: #D1317B;
@@ -20,7 +19,7 @@
   --color-brown: #2A1B14;
   --color-muted: #2C2C2C;
 
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-lato);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -102,7 +101,7 @@ html {
 body {
   background-color: var(--color-cream);
   color: var(--color-brown);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--font-lato), system-ui, sans-serif;
 }
 
 .bg-wedding-green {
@@ -119,7 +118,7 @@ body {
   cursor: url("/images/ginger2.png"), auto;
 }
 
-:is(button, a, input, select, textarea):hover {
+:is(button, a, input, select, textarea):hover, .cursor-hover {
   cursor: url("/images/ginger-hover.png"), auto;
 }
 
@@ -230,7 +229,15 @@ textarea,
 
 .side-border-flowers--right .side-border-flower--top {
   top: 3%;
+  right: -24px;
+  left: auto;
   width: 250px;
+}
+
+@media (min-width: 768px) {
+  .side-border-flowers--right .side-border-flower--top {
+    scale: -1 1;
+  }
 }
 
 .side-border-flower--bottom {
@@ -251,10 +258,10 @@ textarea,
   }
 
   .side-border-flowers--right {
-    top: auto;
+    top: 0;
     bottom: 0;
     width: 100%;
-    height: 120px;
+    height: auto;
     transform: none;
   }
 
@@ -282,8 +289,10 @@ textarea,
   }
 
   .side-border-flowers--right .side-border-flower--top {
-    top: 20px;
-    left: -15%;
+    top: 68px;
+    right: 0;
+    left: auto;
+    width: 82px;
   }
 
   .side-border-flowers--right .side-border-flower--bottom {
@@ -317,6 +326,10 @@ h1, h2, h3, h4 {
 
 h2 {
   font-size: 2rem;
+}
+
+h2, h3, h4 {
+  font-weight: 600;
 }
 
 .instagram-marquee {

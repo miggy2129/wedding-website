@@ -4,13 +4,13 @@ import { loadGroupMembers, postGroupSubmit } from "@/_services/form";
 import { FormState, GroupMember, GroupUpdate, RsvpResult, RsvpStatus } from "@/_types/rsvp";
 
 const inputClass =
-  "w-full border border-[#E8D8CC] bg-white px-3 py-2 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-[#B8966E] transition-colors";
+  "w-full border border-[#E8D8CC] bg-white px-3 py-2 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-[#B8966E] transition-colors";
 
 const invalidInputClass =
-  "w-full border border-[#C97B7B] bg-white px-3 py-2 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-[#9A3B3B] transition-colors";
+  "w-full border border-[#C97B7B] bg-white px-3 py-2 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-[#9A3B3B] transition-colors";
 
 const smallLabelClass =
-  "block font-sans text-[10px] tracking-[0.2em] uppercase text-[#2C2C2C]/70 mb-1";
+  "block font-lato text-[10px] tracking-[0.2em] uppercase text-[#2C2C2C]/70 mb-1";
 
 const EMAIL_PATTERN = /^\S+@\S+\.\S+$/;
 
@@ -152,14 +152,14 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
       <h3 id="group-dialog-title" className="font-serif text-3xl font-light mb-3">
         Anyone else in your party?
       </h3>
-      <p className="font-sans text-sm text-[#2C2C2C]/60 mb-6">
+      <p className="font-lato text-sm text-[#2C2C2C]/60 mb-6">
         Your response ({form.status === RsvpStatus.declined ? "declines" : "accepts"}) is saved
         together with anyone you answer for below. Leave someone unset to skip them.
       </p>
 
       {members === null && !loadError && (
         <>
-          <p role="status" className="font-sans text-sm text-[#2C2C2C]/60 mb-4">
+          <p role="status" className="font-lato text-sm text-[#2C2C2C]/60 mb-4">
             Finding everyone in your party…
           </p>
           <ul aria-hidden="true" className="space-y-5">
@@ -179,7 +179,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
       )}
 
       {loadError && (
-        <div className="font-sans text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3">
+        <div className="font-lato text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3">
           <p>{loadError}</p>
           <button
             type="button"
@@ -215,7 +215,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
                         onClick={() =>
                           updateRow(member.id, { status: active ? null : option.value })
                         }
-                        className={`font-sans text-[11px] tracking-[0.15em] uppercase px-4 py-2 border transition-colors cursor-pointer ${
+                        className={`font-lato text-[11px] tracking-[0.15em] uppercase px-4 py-2 border transition-colors cursor-pointer ${
                           active
                             ? "bg-[#B8966E] border-[#B8966E] text-white"
                             : "bg-white border-[#E8D8CC] text-[#2C2C2C] hover:border-[#B8966E]"
@@ -244,7 +244,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
                       className={emailErrors[member.id] ? invalidInputClass : inputClass}
                     />
                     {emailErrors[member.id] && (
-                      <p className="font-sans text-xs text-[#9A3B3B] mt-1">
+                      <p className="font-lato text-xs text-[#9A3B3B] mt-1">
                         {emailErrors[member.id]}
                       </p>
                     )}
@@ -284,7 +284,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
       </ul>
 
       {error && (
-        <p className="font-sans text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3 mt-5">
+        <p className="font-lato text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3 mt-5">
           {error}
         </p>
       )}
@@ -294,7 +294,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
           type="button"
           onClick={handleSave}
           disabled={isSubmitting || !members}
-          className="flex-1 bg-[#B8966E] text-white font-sans text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-[#2C2C2C] transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-[#B8966E]"
+          className="flex-1 bg-[#B8966E] text-white font-lato text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-[#2C2C2C] transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-[#B8966E]"
         >
           {isSubmitting ? "Saving..." : "Save RSVP"}
         </button>
@@ -302,7 +302,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
           type="button"
           onClick={onBack}
           disabled={isSubmitting}
-          className="font-sans text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C]/60 hover:text-[#B8966E] transition-colors cursor-pointer disabled:opacity-60"
+          className="font-lato text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C]/60 hover:text-[#B8966E] transition-colors cursor-pointer disabled:opacity-60"
         >
           Back
         </button>

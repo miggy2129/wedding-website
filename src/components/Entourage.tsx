@@ -28,24 +28,17 @@ const GROOMSMEN_BRIDESMAIDS = [
   ['', 'Julian Bagatsing']
 ];
 
-const CANDLE_SPONSORS = [
-  'Katrina Camille Peña',
-  'Jheric de los Angeles'
-];
-
-const VEIL_SPONSORS = [
-  'Bea Korina Madrid',
-  'Laurence Kristoffer Espiritu'
-];
-
-const CORD_SPONSORS = [
-  'Janine Bulseco',
-  'Cyrill Chan'
-];
-
-const FLOWER_GIRLS = [
-  'Lily Alexandria Salvador',
-  'Tali Magsaysay' 
+const SPECIAL_SPONSORS = [
+  [
+    'Katrina Camille Peña',
+    'Janine Bulseco',
+    'Bea Korina Madrid'
+  ],
+   [
+    'Jheric de los Angeles',
+    'Cyrill Chan',
+    'Laurence Kristoffer Espiritu'
+  ]
 ];
 
 export default function Events() {
@@ -59,12 +52,12 @@ export default function Events() {
         <div className="mt-6 mb-6">
           <Table>
             <TableHeader>
-              <TableRow className="border">
+              <TableRow>
                 <TableHead>
-                  Parents of the Bride
+                  <u>Parents of the Bride</u>
                 </TableHead>
                 <TableHead>
-                  Parents of the Groom
+                  <u>Parents of the Groom</u>
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -86,9 +79,9 @@ export default function Events() {
         <div className="mt-6 mb-6">
           <Table>
             <TableHeader>
-              <TableRow className="border">
+              <TableRow>
                 <TableHead colSpan={2}>
-                  Principal Sponsors
+                  <u>Principal Sponsors</u>
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -108,12 +101,12 @@ export default function Events() {
         <div className="mt-6 mb-6">
           <Table>
             <TableHeader>
-              <TableRow className="border">
+              <TableRow>
                 <TableHead>
-                  Maids of Honor
+                  <u>Maids of Honor</u>
                 </TableHead>
                 <TableHead>
-                  Best Man
+                  <u>Best Man</u>
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -133,15 +126,15 @@ export default function Events() {
           </Table>
         </div>
 
-        <div className="mt-6 mb-6">
+        <div className="my-6">
           <Table>
             <TableHeader>
-              <TableRow className="border">
+              <TableRow>
                 <TableHead>
-                  Bridesmaids
+                  <u>Bridesmaids</u>
                 </TableHead>
                 <TableHead>
-                  Groomsmen
+                  <u>Groomsmen</u>
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -161,99 +154,66 @@ export default function Events() {
         <div className="mt-6 mb-6">
           <Table>
             <TableHeader>
-              <TableRow className="border">
-                <TableHead colSpan={2}>
-                  Candle Sponsors
+              <TableRow>
+                <TableHead colSpan={3}>
+                  <u>Special Roles</u>
                 </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               <TableRow>
-                {CANDLE_SPONSORS.map((member, i) => (
-                    <TableCell key={i}>{member}</TableCell>
+                <TableCell className="text-lg font-serif text-[#588FE1] font-bold pb-0">
+                  candle
+                </TableCell>
+                <TableCell className="text-lg font-serif text-[#588FE1] font-bold pb-0">
+                  veil
+                </TableCell>
+                <TableCell className="text-lg font-serif text-[#588FE1] font-bold pb-0">
+                  cord
+                </TableCell>
+              </TableRow>
+              {SPECIAL_SPONSORS.map((group, i) => (
+                <TableRow key={i}>
+                  {group.map((person, groupIndex) => (
+                    <TableCell key={groupIndex}>
+                      {person}
+                    </TableCell>
                   ))}
+                </TableRow>
+              ))}
+              <TableRow>
+                <TableCell className="text-lg font-serif text-[#588FE1] font-bold pb-0 pt-5">
+                  coin & bible bearer
+                </TableCell>
+                <TableCell className="text-lg font-serif text-[#588FE1] font-bold pb-0 pt-5">
+                  ring bearer
+                </TableCell>
+                <TableCell className="text-lg font-serif text-[#588FE1] font-bold pb-0 pt-5">
+                  flower girls
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  Rafael Mercado
+                </TableCell>
+                <TableCell>
+                  Jess Augustus Bulseco
+                </TableCell>
+                <TableCell>
+                  Thalisse Celeste Magsaysay
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell>
+                  Lily Alexandria Salvador
+                </TableCell>
               </TableRow>
             </TableBody>
           </Table>
         </div>
 
-        <div className="mt-6 mb-6">
-          <Table>
-            <TableHeader>
-              <TableRow className="border">
-                <TableHead colSpan={2}>
-                  Veil Sponsors
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                {VEIL_SPONSORS.map((member, i) => (
-                    <TableCell key={i}>{member}</TableCell>
-                  ))}
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
-
-        <div className="mt-6 mb-6">
-          <Table>
-            <TableHeader>
-              <TableRow className="border">
-                <TableHead colSpan={2}>
-                  Cord Sponsors
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                {CORD_SPONSORS.map((member, i) => (
-                    <TableCell key={i}>{member}</TableCell>
-                  ))}
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
-
-        <div className="mt-6 mb-6">
-          <Table>
-            <TableHeader>
-              <TableRow className="border">
-                <TableHead colSpan={2}>
-                  Flower Girls
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                {FLOWER_GIRLS.map((member, i) => (
-                    <TableCell key={i}>{member}</TableCell>
-                  ))}
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
-
-        <div className="mt-6 mb-6">
-          <Table>
-            <TableHeader>
-              <TableRow className="border">
-                <TableHead>
-                  Coin and Bible Bearer
-                </TableHead>
-                <TableHead>
-                  Ring Bearer
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>Rafael Mercado</TableCell>
-                <TableCell>Jess Augustus Bulseco</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
       </div>
     </section>
   );
