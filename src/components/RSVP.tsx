@@ -4,7 +4,7 @@ import { postSubmit } from "@/_services/form";
 import { RsvpStatus, FormState } from "@/_types/rsvp";
 
 const inputClass =
-  "w-full border border-[#E8D8CC] bg-white px-4 py-3 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-[#B8966E] transition-colors";
+  "w-full border border-[#E8D8CC] bg-white px-4 py-3 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors";
 
 const labelClass =
   "block font-sans text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] mb-2";
@@ -40,13 +40,13 @@ export default function RSVP() {
   return (
     <section id="rsvp" className="py-28 px-6 bg-[#FAF8F5]">
       <div className="max-w-lg mx-auto text-center">
-        <p className="font-sans text-[11px] tracking-[0.35em] uppercase text-[#B8966E] mb-4">
+        <p className="font-sans text-[11px] tracking-[0.35em] uppercase text-(--color-pink) mb-4">
           Join Us
         </p>
         <h2 className="font-serif text-5xl md:text-6xl font-light text-[#2C2C2C] mb-6">RSVP</h2>
-        <div className="w-10 h-px bg-[#B8966E] mx-auto mb-8" />
+        <div className="w-10 h-px bg-(--color-pink) mx-auto mb-8" />
         <p className="font-sans text-sm text-[#2C2C2C]/60 mb-14">
-          Kindly respond by August 1, 2026.
+          Kindly respond by October 31, 2026.
         </p>
 
         {submitted ? (
@@ -126,7 +126,7 @@ export default function RSVP() {
 
             <button
               type="submit"
-              className="w-full bg-[#B8966E] text-white font-sans text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-[#2C2C2C] transition-colors cursor-pointer"
+              className="w-full bg-(--color-pink) text-white font-sans text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-[#2C2C2C] transition-colors cursor-pointer"
             >
               Send RSVP
             </button>

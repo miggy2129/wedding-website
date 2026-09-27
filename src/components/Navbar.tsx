@@ -2,10 +2,10 @@
 import { useState, useEffect } from "react";
 
 const links = [
-  { label: "Our Story", href: "#our-story" },
-  { label: "Events", href: "#events" },
   { label: "Gallery", href: "#gallery" },
-  { label: "Travel", href: "#travel" },
+  { label: "Schedule", href: "#schedule" },
+  { label: "Dress Code", href: "#dress-code" },
+  { label: "Entourage", href: "#entourage" },
   { label: "Registry", href: "#registry" },
   { label: "RSVP", href: "#rsvp" },
 ];
@@ -36,7 +36,7 @@ export default function Navbar() {
             <li key={l.href}>
               <a
                 href={l.href}
-                className="font-sans text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] hover:text-[#B8966E] transition-colors"
+                className="font-sans text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] hover:text-(--color-pink) transition-colors"
               >
                 {l.label}
               </a>
@@ -68,7 +68,7 @@ export default function Navbar() {
                 <a
                   href={l.href}
                   onClick={() => setOpen(false)}
-                  className="font-sans text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] hover:text-[#B8966E]"
+                  className="font-sans text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] hover:text-(--color-pink)"
                 >
                   {l.label}
                 </a>

@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Lato } from "next/font/google";
+import { Cormorant_Garamond, Lato, Geist } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -26,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${lato.variable}`}>
+    <html lang="en" className={cn(cormorant.variable, lato.variable, "font-sans", geist.variable)}>
       <body>
         <Navbar />
         {children}
