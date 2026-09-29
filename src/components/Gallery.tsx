@@ -14,10 +14,7 @@ export default function Gallery() {
   return (
     <section id="gallery" className="relative z-10 py-28 px-6">
       <div className="max-w-5xl mx-auto text-center">
-        <p className="font-lato text-[11px] tracking-[0.35em] uppercase text-(--color-pink) mb-4">
-          Memories
-        </p>
-        <h2 className="font-serif text-5xl md:text-6xl font-light text-[#2C2C2C] mb-6">Gallery</h2>
+        <h2 className="font-serif text-5xl md:text-6xl font-light text-[#2C2C2C] mb-6 hidden">Gallery</h2>
         <div className="w-10 h-px bg-(--color-pink) mx-auto mb-16" />
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">

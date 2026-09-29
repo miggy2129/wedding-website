@@ -17,7 +17,8 @@ const MEN = [
     'https://www.instagram.com/p/DZdz4kmkm6s/',
     'https://www.instagram.com/p/DasFDT7yeCu/',
     'https://www.instagram.com/p/Dc9QdPSybLt/',
-    'https://www.instagram.com/p/DVhhW08khQX/'
+    'https://www.instagram.com/p/CtIdVNcPF-1/',
+    'https://www.instagram.com/p/CiUGr1UuWuq/'
 ]
 
 export default function DressCode() {
@@ -43,7 +44,12 @@ export default function DressCode() {
                         </p>
                     </div>
                     <div className="min-w-0 overflow-hidden md:col-span-3">
-                        <div className="instagram-marquee">
+                        <div
+                            className="instagram-marquee"
+                            role="region"
+                            aria-label="Ladies' dress inspiration posts"
+                            tabIndex={0}
+                        >
                             <div className="instagram-marquee__track">
                                 <div className="instagram-marquee__group">
                                     {LADIES.map((image, i) => (
@@ -67,7 +73,12 @@ export default function DressCode() {
                 {/* Men */}
                 <div className="grid md:grid-cols-4 gap-3 mt-0 mb-5 md:my-5">
                     <div className="min-w-0 overflow-hidden md:col-span-3 md:order-1 order-2">
-                        <div className="instagram-marquee">
+                        <div
+                            className="instagram-marquee"
+                            role="region"
+                            aria-label="Men's dress inspiration posts"
+                            tabIndex={0}
+                        >
                             <div className="instagram-marquee__track">
                                 <div className="instagram-marquee__group">
                                     {MEN.map((image, i) => (

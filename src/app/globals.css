@@ -333,7 +333,16 @@ h2, h3, h4 {
 }
 
 .instagram-marquee {
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-color: var(--color-yellow) transparent;
+  scrollbar-width: thin;
+}
+
+.instagram-marquee:focus-visible {
+  outline: 2px solid var(--color-yellow);
+  outline-offset: 2px;
 }
 
 .instagram-marquee__track {
@@ -342,8 +351,10 @@ h2, h3, h4 {
   animation: instagram-marquee 96s linear infinite;
 }
 
-.instagram-marquee__track:hover {
-  animation-play-state: paused;
+.instagram-marquee:hover .instagram-marquee__track,
+.instagram-marquee:focus-within .instagram-marquee__track {
+  animation: none;
+  transform: none;
 }
 
 .instagram-marquee__group {
@@ -360,6 +371,12 @@ h2, h3, h4 {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .instagram-marquee__track {
+    animation: none;
+  }
+}
+
+@media (pointer: coarse) {
   .instagram-marquee__track {
     animation: none;
   }

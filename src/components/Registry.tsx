@@ -18,7 +18,7 @@ const registries = [
 export default function Registry() {
   return (
     <section id="registry" className="py-15 px-6 bg-(--color-yellow)/65">
-      <div className="max-w-2xl mx-auto text-center">
+      <div className="max-w-3xl mx-auto text-center">
         <h2 className="font-serif text-5xl md:text-6xl font-light text-[#2C2C2C] mb-6">
           Gifts
         </h2>
@@ -30,10 +30,11 @@ export default function Registry() {
 
         </p>
 
-        <div className="grid md:grid-cols-2 gap-3">
+        <div className="grid md:grid-cols-4 gap-4 justify-center">
+          <div></div>
           {registries.map((r, i) => (
             <div key={i}
-              className="flex flex-col border border-[#E8D8CC] bg-[#FAF8F5] p-5 md:p-7 hover:bg-white transition-colors group"
+              className="flex flex-col border border-[#E8D8CC] bg-[#FAF8F5] p-5 md:p-3 hover:bg-white transition-colors group"
             >
               <Image
                 src={r.url}
@@ -50,6 +51,8 @@ export default function Registry() {
               </div>
             </div>
           ))}
+          <div></div>
+
         </div>
       </div>
     </section>
