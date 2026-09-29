@@ -39,7 +39,7 @@ export default function DressCode() {
                         <div className="mt-2 mb-5">
                             <h4 className="text-lg text-(--color-yellow)">Color palette</h4>
                             <p className="text-xs">
-                                No strict color palette! Dress to celebrate in vibrant and bold colors, patterns, and textures.<br/>
+                                No strict color palette! Dress to celebrate in vibrant and bold colors, patterns, and textures.<br/><br/>
                                 We’re asking everyone to skip black, white, and any off-white/cream shades.
                             </p>
                         </div>
