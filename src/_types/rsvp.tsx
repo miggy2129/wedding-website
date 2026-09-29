@@ -4,6 +4,12 @@ export enum RsvpStatus {
   declined = "Declined"
 }
 
+// Guest-facing labels, shared by the main RSVP form and the group dialog.
+export const rsvpStatusLabels = {
+  [RsvpStatus.accepted]: "Attending",
+  [RsvpStatus.declined]: "Not attending",
+} as const;
+
 export type FormState = {
   name: string;
   email: string;
