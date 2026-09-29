@@ -198,12 +198,12 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
           return (
             <li key={member.id} className="border border-[#E8D8CC] bg-white p-5">
               <div className="flex items-center justify-between gap-3 flex-wrap">
-                <p className="font-serif text-2xl font-light">{member.name}</p>
-                <div className="flex items-center gap-3">
+                <p className="min-w-0 break-words font-serif text-2xl font-light">{member.name}</p>
+                <div className="flex flex-wrap items-center gap-3">
                   <div
                     role="group"
                     aria-label={`Response for ${member.name}`}
-                    className="flex"
+                    className="flex flex-wrap"
                   >
                     {toggleOptions.map((option) => {
                       const active = row.status === option.value;
