@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import { postSubmit } from "@/_services/form";
-import { RsvpStatus, FormState } from "@/_types/rsvp";
+import { RsvpStatus, FormState, rsvpStatusLabels } from "@/_types/rsvp";
 import GroupRsvpDialog from "@/components/GroupRsvpDialog";
 import Image from "next/image";
 
@@ -190,8 +190,8 @@ export default function RSVP() {
                   <div>
                     <label htmlFor="rsvp-status" className={`block font-lato text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] mb-2`}>Will you attend?</label>
                     <select id="rsvp-status" value={form.status} onChange={set("status")} className={`w-full border border-[#E8D8CC] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors`}>
-                      <option value={RsvpStatus.accepted}>Joyfully accepts</option>
-                      <option value={RsvpStatus.declined}>Regretfully declines</option>
+                      <option value={RsvpStatus.accepted}>{rsvpStatusLabels[RsvpStatus.accepted]}</option>
+                      <option value={RsvpStatus.declined}>{rsvpStatusLabels[RsvpStatus.declined]}</option>
                     </select>
                   </div>
 

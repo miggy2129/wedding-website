@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { loadGroupMembers, postGroupSubmit } from "@/_services/form";
-import { FormState, GroupMember, GroupUpdate, RsvpResult, RsvpStatus } from "@/_types/rsvp";
+import { FormState, GroupMember, GroupUpdate, RsvpResult, RsvpStatus, rsvpStatusLabels } from "@/_types/rsvp";
 
 const inputClass =
   "w-full border border-[#E8D8CC] bg-white px-3 py-2 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-[#B8966E] transition-colors";
@@ -24,8 +24,8 @@ type Props = {
 };
 
 const toggleOptions = [
-  { value: RsvpStatus.accepted, label: "Accepts" },
-  { value: RsvpStatus.declined, label: "Declines" },
+  { value: RsvpStatus.accepted, label: rsvpStatusLabels[RsvpStatus.accepted] },
+  { value: RsvpStatus.declined, label: rsvpStatusLabels[RsvpStatus.declined] },
 ] as const;
 
 export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) {
@@ -153,8 +153,8 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
         Anyone else in your party?
       </h3>
       <p className="font-lato text-sm text-[#2C2C2C]/60 mb-6">
-        Your response ({form.status === RsvpStatus.declined ? "declines" : "accepts"}) is saved
-        together with anyone you answer for below. Leave someone unset to skip them.
+        Your response ({form.status === RsvpStatus.declined ? "not attending" : "attending"})
+        is saved together with anyone you answer for below. Anyone you leave unanswered is skipped.
       </p>
 
       {members === null && !loadError && (
@@ -198,38 +198,45 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
           return (
             <li key={member.id} className="border border-[#E8D8CC] bg-white p-5">
               <div className="flex items-center justify-between gap-3 flex-wrap">
-                <p className="font-serif text-2xl font-light">
-                  {member.name}{" "}
-                  <span className="font-sans text-xs font-normal tracking-normal text-[#2C2C2C]/40">
-                    (optional)
-                  </span>
-                </p>
-                <div
-                  role="group"
-                  aria-label={`Response for ${member.name}`}
-                  className="flex"
-                >
-                  {toggleOptions.map((option) => {
-                    const active = row.status === option.value;
+                <p className="min-w-0 break-words font-serif text-2xl font-light">{member.name}</p>
+                <div className="flex flex-wrap items-center gap-3">
+                  <div
+                    role="group"
+                    aria-label={`Response for ${member.name}`}
+                    className="flex flex-wrap"
+                  >
+                    {toggleOptions.map((option) => {
+                      const active = row.status === option.value;
 
-                    return (
-                      <button
-                        key={option.value}
-                        type="button"
-                        aria-pressed={active}
-                        onClick={() =>
-                          updateRow(member.id, { status: active ? null : option.value })
-                        }
-                        className={`font-lato text-[11px] tracking-[0.15em] uppercase px-4 py-2 border transition-colors cursor-pointer ${
-                          active
-                            ? "bg-[#B8966E] border-[#B8966E] text-white"
-                            : "bg-white border-[#E8D8CC] text-[#2C2C2C] hover:border-[#B8966E]"
-                        }`}
-                      >
-                        {option.label}
-                      </button>
-                    );
-                  })}
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          aria-pressed={active}
+                          onClick={() =>
+                            updateRow(member.id, { status: active ? null : option.value })
+                          }
+                          className={`font-lato text-[11px] tracking-[0.15em] uppercase px-4 py-2 border transition-colors cursor-pointer ${
+                            active
+                              ? "bg-[#B8966E] border-[#B8966E] text-white"
+                              : "bg-white border-[#E8D8CC] text-[#2C2C2C] hover:border-[#B8966E]"
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {row.status && (
+                    <button
+                      type="button"
+                      onClick={() => updateRow(member.id, { status: null })}
+                      aria-label={`Clear response for ${member.name}`}
+                      className="font-lato text-[11px] tracking-[0.15em] uppercase text-[#2C2C2C]/60 underline underline-offset-2 hover:text-[#B8966E] transition-colors cursor-pointer"
+                    >
+                      Clear
+                    </button>
+                  )}
                 </div>
               </div>
 
