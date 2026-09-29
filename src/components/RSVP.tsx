@@ -107,7 +107,7 @@ export default function RSVP() {
             <p className="font-lato text-sm text-[#2C2C2C]/60 mb-5">
               While we wish we can accommodate everyone, we kindly ask that only the guests listed on the invitation attend.<br/>
               <br/>
-              Please confirm your attendance by <b>October 30th</b>. 
+              Please confirm your attendance by <b>October 30, 2026</b>. 
             </p>
 
             {submitted ? (
