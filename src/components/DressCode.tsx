@@ -26,13 +26,7 @@ export default function DressCode() {
         <section id="dress-code" className="bg-(--color-red)/90 text-white">
             <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
                 <h2 className="text-(--color-yellow)">Dress Code</h2>
-                <div className="text-center mx-auto mt-2 mb-5">
-                    <h3 className="text-xl text-(--color-yellow)">Color palette</h3>
-                    <p className="text-sm">
-                        Any bold and bright color will do.<br/>
-                        Dress to celebrate in bold, beautiful colors, patterns, and textures!
-                    </p>
-                </div>
+               
 
                 {/* Ladies */}
                 <div className="grid md:grid-cols-4 gap-3 pt-5 mb-5">
@@ -40,8 +34,15 @@ export default function DressCode() {
                         <h3 className="text-xl mb-2 text-(--color-yellow)">For the Ladies</h3>
                         <p className="text-xs text-pretty">
                             <b className="uppercase">Garden Formal</b><br/>
-                            <i>Long or midi-length dresses, tailored jumpsuits or wide-leg trousers in vibrant colors and playful silhouettes would be beautiful.</i>
+                            <i>Elegant, polished attire: long or midi-length dresses, tailored jumpsuits, or wide-length trousers suitable for an outdoor celebration.</i>
                         </p>
+                        <div className="mt-2 mb-5">
+                            <h4 className="text-lg text-(--color-yellow)">Color palette</h4>
+                            <p className="text-xs">
+                                No strict color palette! Dress to celebrate in vibrant and bold colors, patterns, and textures.<br/>
+                                We’re asking everyone to skip black, white, and any off-white/cream shades.
+                            </p>
+                        </div>
                     </div>
                     <div className="min-w-0 overflow-hidden md:col-span-3">
                         <div
