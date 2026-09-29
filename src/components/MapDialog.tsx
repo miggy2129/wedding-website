@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 type Props = {
   venue: string;
@@ -9,8 +9,19 @@ type Props = {
 
 export default function MapDialog({ venue, address, maps }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const [copied, setCopied] = useState(false);
   const query = encodeURIComponent(`${venue}, ${address}`);
   const embedSrc = `https://www.google.com/maps?q=${query}&output=embed`;
+
+  async function copyLink() {
+    try {
+      await navigator.clipboard.writeText(maps);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard unavailable (e.g. insecure context); the "Open" link still works.
+    }
+  }
 
   return (
     <>
@@ -51,7 +62,15 @@ export default function MapDialog({ venue, address, maps }: Props) {
           referrerPolicy="no-referrer-when-downgrade"
           className="block h-[60vh] w-full border-0"
         />
-        <div className="px-5 py-3 text-right">
+        <div className="flex items-center justify-end gap-6 px-5 py-3">
+          <button
+            type="button"
+            onClick={copyLink}
+            aria-live="polite"
+            className="font-lato text-xs uppercase tracking-widest text-pink underline"
+          >
+            {copied ? "Link copied!" : "Copy link"}
+          </button>
           <a
             href={maps}
             target="_blank"
