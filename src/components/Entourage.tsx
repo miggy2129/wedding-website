@@ -41,7 +41,7 @@ const SPECIAL_SPONSORS = [
   ]
 ];
 
-export default function Events() {
+export default function Entourage() {
   return (
     <section id="entourage" className="py-28 px-6">
       <div className="max-w-4xl mx-auto text-center">

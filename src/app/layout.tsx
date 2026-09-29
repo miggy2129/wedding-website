@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={cn(cormorant.variable, lato.variable, "font-sans", lato.variable)}>
+    <html lang="en" className={cn(cormorant.variable, lato.variable, "font-sans")}>
       <body>
         <Navbar />
         {children}

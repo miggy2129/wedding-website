@@ -29,7 +29,7 @@ export default function Hero() {
 
           <h1 className="font-serif text-7xl md:text-9xl font-light text-[#2C2C2C] leading-none">
             Miguel<br/>
-            <div className="flex justify-end">
+            <span className="flex justify-end">
               <Image
                 src='/images/design/and1.png'
                 alt="and"
@@ -39,7 +39,7 @@ export default function Hero() {
                 className="h-auto w-[80px] shrink-0 md:w-[120px]"
               />
               <span>Ina</span>
-            </div>
+            </span>
           </h1>
 
           <p className="font-lato text-xs flex flex-col md:flex-row md:text-sm tracking-[0.25em] uppercase text-[#2C2C2C]/60 mb-14">

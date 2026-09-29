@@ -103,7 +103,7 @@ export default function RSVP() {
             <p className="font-lato text-[11px] tracking-[0.35em] uppercase text-(--color-pink) mb-4">
               RSVP
             </p>
-            <h2 className="font-serif text-5xl md:text-6xl font-light text-[#2C2C2C] mb-6">Tell us if you'll be there.</h2>
+            <h2 className="font-serif text-5xl md:text-6xl font-light text-[#2C2C2C] mb-6">Tell us if you&apos;ll be there.</h2>
             <p className="font-lato text-sm text-[#2C2C2C]/60 mb-5">
               While we wish we can accommodate everyone, we kindly ask that only the guests listed on the invitation attend.<br/>
               <br/>
