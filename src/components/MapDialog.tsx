@@ -7,6 +7,9 @@ type Props = {
   maps: string;
 };
 
+const buttonClass =
+  "rounded-full border border-pink px-4 py-2 font-lato text-xs uppercase tracking-widest text-pink transition-colors hover:bg-pink hover:text-white";
+
 export default function MapDialog({ venue, address, maps }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [copied, setCopied] = useState(false);
@@ -62,23 +65,22 @@ export default function MapDialog({ venue, address, maps }: Props) {
           referrerPolicy="no-referrer-when-downgrade"
           className="block h-[60vh] w-full border-0"
         />
-        <div className="flex items-center justify-end gap-6 px-5 py-3">
+        <div className="flex flex-wrap items-center justify-end gap-3 px-5 py-3">
           <button
             type="button"
             onClick={copyLink}
             aria-live="polite"
-            className="font-lato text-xs uppercase tracking-widest text-pink underline"
+            className={buttonClass}
           >
             {copied ? "Link copied!" : "Copy link"}
           </button>
-          <a
-            href={maps}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-lato text-xs uppercase tracking-widest text-pink underline"
+          <button
+            type="button"
+            onClick={() => window.open(maps, "_blank", "noopener,noreferrer")}
+            className={buttonClass}
           >
             Open in Google Maps app
-          </a>
+          </button>
         </div>
       </dialog>
     </>
