@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import MapDialog from '@/components/MapDialog'
 
 const LOCATIONS = [
   {
@@ -74,13 +75,7 @@ export default function Events() {
               <p className="mx-auto mt-6 max-w-sm font-lato text-xs leading-relaxed tracking-wide text-white/90">
                 {location.note}
               </p>
-              <a
-                href={location.maps}
-                target="_blank"
-                className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/50 px-5 py-3 font-lato text-xs uppercase tracking-widest transition-colors hover:bg-white hover:text-black"
-              >
-                Check on Google Maps <span aria-hidden="true">→</span>
-              </a>
+              <MapDialog venue={location.venue} address={location.address} maps={location.maps} />
             </div>
           </div>
         ))}
