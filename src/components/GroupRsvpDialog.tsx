@@ -1,16 +1,16 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { loadGroupMembers, postGroupSubmit } from "@/_services/form";
-import { FormState, GroupMember, GroupUpdate, RsvpResult, RsvpStatus } from "@/_types/rsvp";
+import { FormState, GroupMember, GroupUpdate, RsvpResult, RsvpStatus, rsvpStatusLabels } from "@/_types/rsvp";
 
 const inputClass =
-  "w-full border border-[#E8D8CC] bg-white px-3 py-2 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-[#B8966E] transition-colors";
+  "w-full border border-[#E8D8CC] bg-white px-3 py-2 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-[#B8966E] transition-colors";
 
 const invalidInputClass =
-  "w-full border border-[#C97B7B] bg-white px-3 py-2 font-sans text-sm text-[#2C2C2C] focus:outline-none focus:border-[#9A3B3B] transition-colors";
+  "w-full border border-[#C97B7B] bg-white px-3 py-2 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-[#9A3B3B] transition-colors";
 
 const smallLabelClass =
-  "block font-sans text-[10px] tracking-[0.2em] uppercase text-[#2C2C2C]/70 mb-1";
+  "block font-lato text-[10px] tracking-[0.2em] uppercase text-[#2C2C2C]/70 mb-1";
 
 const EMAIL_PATTERN = /^\S+@\S+\.\S+$/;
 
@@ -24,8 +24,8 @@ type Props = {
 };
 
 const toggleOptions = [
-  { value: RsvpStatus.accepted, label: "Accepts" },
-  { value: RsvpStatus.declined, label: "Declines" },
+  { value: RsvpStatus.accepted, label: rsvpStatusLabels[RsvpStatus.accepted] },
+  { value: RsvpStatus.declined, label: rsvpStatusLabels[RsvpStatus.declined] },
 ] as const;
 
 export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) {
@@ -152,20 +152,20 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
       <h3 id="group-dialog-title" className="font-serif text-3xl font-light mb-3">
         Anyone else in your party?
       </h3>
-      <p className="font-sans text-sm text-[#2C2C2C]/60 mb-6">
-        Your response ({form.status === RsvpStatus.declined ? "declines" : "accepts"}) is saved
-        together with anyone you answer for below. Leave someone unset to skip them.
+      <p className="font-lato text-sm text-[#2C2C2C]/60 mb-6">
+        Your response ({form.status === RsvpStatus.declined ? "not attending" : "attending"})
+        is saved together with anyone you answer for below. Anyone you leave unanswered is skipped.
       </p>
 
       {members === null && !loadError && (
         <>
-          <p role="status" className="font-sans text-sm text-[#2C2C2C]/60 mb-4">
+          <p role="status" className="font-lato text-sm text-[#2C2C2C]/60 mb-4">
             Finding everyone in your party…
           </p>
           <ul aria-hidden="true" className="space-y-5">
             {Array.from({ length: group.count }, (_, i) => (
               <li key={i} className="border border-[#E8D8CC] bg-white p-5 animate-pulse">
-                <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div className="flex flex-col gap-3">
                   <div className="h-7 w-40 bg-[#E8D8CC]" />
                   <div className="flex">
                     <div className="h-9 w-24 bg-[#F0E6DF]" />
@@ -179,7 +179,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
       )}
 
       {loadError && (
-        <div className="font-sans text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3">
+        <div className="font-lato text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3">
           <p>{loadError}</p>
           <button
             type="button"
@@ -197,39 +197,46 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
 
           return (
             <li key={member.id} className="border border-[#E8D8CC] bg-white p-5">
-              <div className="flex items-center justify-between gap-3 flex-wrap">
-                <p className="font-serif text-2xl font-light">
-                  {member.name}{" "}
-                  <span className="font-sans text-xs font-normal tracking-normal text-[#2C2C2C]/40">
-                    (optional)
-                  </span>
-                </p>
-                <div
-                  role="group"
-                  aria-label={`Response for ${member.name}`}
-                  className="flex"
-                >
-                  {toggleOptions.map((option) => {
-                    const active = row.status === option.value;
+              <div className="flex flex-col gap-3">
+                <p className="min-w-0 break-words font-serif text-2xl font-light">{member.name}</p>
+                <div className="flex flex-col items-start gap-2">
+                  <div
+                    role="group"
+                    aria-label={`Response for ${member.name}`}
+                    className="flex flex-wrap"
+                  >
+                    {toggleOptions.map((option) => {
+                      const active = row.status === option.value;
 
-                    return (
-                      <button
-                        key={option.value}
-                        type="button"
-                        aria-pressed={active}
-                        onClick={() =>
-                          updateRow(member.id, { status: active ? null : option.value })
-                        }
-                        className={`font-sans text-[11px] tracking-[0.15em] uppercase px-4 py-2 border transition-colors cursor-pointer ${
-                          active
-                            ? "bg-[#B8966E] border-[#B8966E] text-white"
-                            : "bg-white border-[#E8D8CC] text-[#2C2C2C] hover:border-[#B8966E]"
-                        }`}
-                      >
-                        {option.label}
-                      </button>
-                    );
-                  })}
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          aria-pressed={active}
+                          onClick={() =>
+                            updateRow(member.id, { status: active ? null : option.value })
+                          }
+                          className={`font-lato text-[11px] tracking-[0.15em] uppercase px-4 py-2 border transition-colors cursor-pointer ${
+                            active
+                              ? "bg-[#B8966E] border-[#B8966E] text-white"
+                              : "bg-white border-[#E8D8CC] text-[#2C2C2C] hover:border-[#B8966E]"
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {row.status && (
+                    <button
+                      type="button"
+                      onClick={() => updateRow(member.id, { status: null })}
+                      aria-label={`Clear response for ${member.name}`}
+                      className="font-lato text-[11px] tracking-[0.15em] uppercase text-[#2C2C2C]/60 underline underline-offset-2 hover:text-[#B8966E] transition-colors cursor-pointer"
+                    >
+                      Clear
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -249,7 +256,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
                       className={emailErrors[member.id] ? invalidInputClass : inputClass}
                     />
                     {emailErrors[member.id] && (
-                      <p className="font-sans text-xs text-[#9A3B3B] mt-1">
+                      <p className="font-lato text-xs text-[#9A3B3B] mt-1">
                         {emailErrors[member.id]}
                       </p>
                     )}
@@ -289,7 +296,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
       </ul>
 
       {error && (
-        <p className="font-sans text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3 mt-5">
+        <p className="font-lato text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3 mt-5">
           {error}
         </p>
       )}
@@ -299,7 +306,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
           type="button"
           onClick={handleSave}
           disabled={isSubmitting || !members}
-          className="flex-1 bg-[#B8966E] text-white font-sans text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-[#2C2C2C] transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-[#B8966E]"
+          className="flex-1 bg-[#B8966E] text-white font-lato text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-[#2C2C2C] transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-[#B8966E]"
         >
           {isSubmitting ? "Saving..." : "Save RSVP"}
         </button>
@@ -307,7 +314,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
           type="button"
           onClick={onBack}
           disabled={isSubmitting}
-          className="font-sans text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C]/60 hover:text-[#B8966E] transition-colors cursor-pointer disabled:opacity-60"
+          className="font-lato text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C]/60 hover:text-[#B8966E] transition-colors cursor-pointer disabled:opacity-60"
         >
           Back
         </button>

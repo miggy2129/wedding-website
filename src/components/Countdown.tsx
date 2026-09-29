@@ -34,7 +34,7 @@ export default function Countdown({ targetDate }: { targetDate: string }) {
           <div className="font-serif text-4xl md:text-5xl font-light text-[#2C2C2C]">
             {String(value).padStart(2, "0")}
           </div>
-          <div className="font-sans text-[10px] tracking-[0.2em] uppercase text-[#B8966E] mt-1">
+          <div className="font-lato text-[10px] tracking-[0.2em] uppercase text-(--color-pink) mt-1">
             {label}
           </div>
         </div>
