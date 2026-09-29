@@ -3,8 +3,11 @@ import SocialPost from '@/components/ui/instagram-embed'
 
 const LADIES = [
     'https://www.instagram.com/reel/DYz28o8NnZK/',
+    'https://www.instagram.com/p/DQHNEHEjtSQ/',
     'https://www.instagram.com/p/DYCk3vXjEKx/',
+    'https://www.instagram.com/p/DXZIxymiPO5/',
     'https://www.instagram.com/p/DXuckgTjLku/',
+    'https://www.instagram.com/p/DXR1XO-CKWU/',
     'https://www.instagram.com/reel/DXzg2v1xIgb/', 
     'https://www.instagram.com/p/DW7OxqciGrS/', 
     'https://www.instagram.com/reel/DWgFYdpCNXs/', 
