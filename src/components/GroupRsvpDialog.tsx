@@ -165,7 +165,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
           <ul aria-hidden="true" className="space-y-5">
             {Array.from({ length: group.count }, (_, i) => (
               <li key={i} className="border border-[#E8D8CC] bg-white p-5 animate-pulse">
-                <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div className="flex flex-col gap-3">
                   <div className="h-7 w-40 bg-[#E8D8CC]" />
                   <div className="flex">
                     <div className="h-9 w-24 bg-[#F0E6DF]" />
@@ -197,7 +197,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
 
           return (
             <li key={member.id} className="border border-[#E8D8CC] bg-white p-5">
-              <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div className="flex flex-col gap-3">
                 <p className="min-w-0 break-words font-serif text-2xl font-light">{member.name}</p>
                 <div className="flex flex-wrap items-center gap-3">
                   <div
