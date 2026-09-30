@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { X } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { loadGroupMembers, postGroupSubmit } from "@/_services/form";
 import { FormState, GroupMember, GroupUpdate, RsvpResult, RsvpStatus } from "@/_types/rsvp";
@@ -24,6 +25,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const scrollTopRef = useRef(0);
   const isSubmittingRef = useRef(false);
+  const pressStartedOnBackdropRef = useRef(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [emailErrors, setEmailErrors] = useState<Record<string, string>>({});
@@ -147,6 +149,20 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
         e.preventDefault();
         if (!isSubmittingRef.current) onBack();
       }}
+      // Only treat it as an outside click when the press both started and ended on
+      // the backdrop, so dragging a text selection out of an input doesn't close it.
+      onMouseDown={(e) => {
+        pressStartedOnBackdropRef.current = e.target === e.currentTarget;
+      }}
+      onClick={(e) => {
+        if (
+          e.target === e.currentTarget &&
+          pressStartedOnBackdropRef.current &&
+          !isSubmittingRef.current
+        ) {
+          onBack();
+        }
+      }}
       onScroll={(e) => {
         scrollTopRef.current = e.currentTarget.scrollTop;
       }}
@@ -160,6 +176,18 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
           height={256}
           className="h-64 w-64 rotate-180 object-contain"
         />
+      </div>
+      <div className="sticky top-0 z-20 h-0">
+        <button
+          type="button"
+          onClick={onBack}
+          disabled={isSubmitting}
+          aria-label="Close"
+          title="Close"
+          className="absolute right-3 top-3 flex size-9 items-center justify-center rounded-full text-(--color-brown)/70 transition-colors hover:bg-(--color-brown)/10 hover:text-(--color-pink) disabled:opacity-60 cursor-pointer"
+        >
+          <X size={22} aria-hidden="true" />
+        </button>
       </div>
       <div className="relative z-10 mb-3 px-8 pt-8">
         <h3 id="group-dialog-title" className="pr-24 font-serif text-3xl">
