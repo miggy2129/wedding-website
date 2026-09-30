@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 const links = [
   { label: "Gallery", href: "#gallery" },
   { label: "Entourage", href: "#entourage" },
-  { label: "Schedule", href: "#schedule" },
+  { label: "Locations", href: "#locations" },
+  { label: "Itinerary", href: "#schedule" },
   { label: "Dress Code", href: "#dress-code" },
   { label: "Registry", href: "#registry" },
   { label: "RSVP", href: "#rsvp" },
@@ -36,7 +37,7 @@ export default function Navbar() {
             <li key={l.href}>
               <a
                 href={l.href}
-                className="py-2 font-lato text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] hover:text-(--color-yellow) transition-colors"
+                className="py-3 hover:underline underline-offset-4 text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] hover:text-(--color-pink) transition-colors ease-in-out font-medium"
               >
                 {l.label}
               </a>

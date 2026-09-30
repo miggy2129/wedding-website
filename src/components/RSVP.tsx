@@ -3,7 +3,6 @@ import { useRef, useState } from "react";
 import { postSubmit } from "@/_services/form";
 import { RsvpStatus, FormState, rsvpStatusLabels } from "@/_types/rsvp";
 import GroupRsvpDialog from "@/components/GroupRsvpDialog";
-import TEMPGroupRsvpDialog from "@/components/TEMPRsvpDialog"
 import Image from "next/image";
 
 type FieldErrors = { name?: string; email?: string; contact?: boolean };
@@ -108,25 +107,46 @@ export default function RSVP() {
             <p className="font-lato text-sm text-[#2C2C2C]/60 mb-5">
               While we wish we can accommodate everyone, we kindly ask that only the guests listed on the invitation attend.<br/>
               <br/>
-              Please confirm your attendance by <b>October 30, 2026</b>. 
+              Please confirm your attendance by <b className="text-(--color-orange)">October 30, 2026</b>. 
             </p>
 
             {submitted ? (
-              <div className="py-20">
-                <p className="font-serif text-4xl font-light text-[#2C2C2C] mb-4">
+              <div className="relative isolate overflow-hidden rounded-lg border border-(--color-yellow)/20 bg-(--color-yellow)/10 px-6 py-16 text-center">
+                <div aria-hidden="true" className="pointer-events-none absolute -left-10 -top-12 opacity-80">
+                  <Image
+                    src="/images/design/top/flower-pink-5.png"
+                    alt=""
+                    width={160}
+                    height={160}
+                    className="h-40 w-40 -rotate-12 object-contain"
+                  />
+                </div>
+                <div aria-hidden="true" className="pointer-events-none absolute -bottom-12 -right-8 opacity-75">
+                  <Image
+                    src="/images/design/bottom/flower-yellow-2.png"
+                    alt=""
+                    width={150}
+                    height={150}
+                    className="h-36 w-36 rotate-12 object-contain"
+                  />
+                </div>
+                <p className="relative mb-4 font-lato text-[10px] tracking-[0.35em] uppercase text-(--color-orange)">
+                  Your RSVP is in
+                </p>
+                <p className="relative font-serif text-5xl font-semibold leading-none text-(--color-pink)">
                   {form.status === RsvpStatus.declined
                     ? "We'll miss you!"
                     : firstName
                     ? `Thank you, ${firstName}!`
                     : "Thank you!"}
                 </p>
-                <p className="font-lato text-sm text-[#2C2C2C]/60">
+                <p className="relative mx-auto mt-5 max-w-sm text-sm leading-6 text-[#2C2C2C]/60">
                   {form.status === RsvpStatus.declined
                     ? "Thank you for letting us know — you'll be in our thoughts on the big day."
                     : "We can't wait to celebrate with you on January 20, 2027."}
                 </p>
                 {groupUpdated > 0 && (
-                  <p className="font-lato text-sm text-[#2C2C2C]/60 mt-3">
+                  <p className="relative mx-auto mt-4 max-w-sm border-t border-(--color-yellow)/30 pt-4 font-lato text-sm text-[#2C2C2C]/60">
                     We&apos;ve also recorded {groupUpdated} other{" "}
                     {groupUpdated === 1 ? "response" : "responses"} for your party.
                   </p>
@@ -144,10 +164,10 @@ export default function RSVP() {
                       onChange={set("name")}
                       aria-invalid={!!fieldErrors.name}
                       aria-describedby={fieldErrors.name ? "rsvp-name-error" : undefined}
-                      className={fieldErrors.name ? `w-full border border-[#C97B7B] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-[#9A3B3B] transition-colors` : `w-full border border-[#E8D8CC] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors`}
+                      className={fieldErrors.name ? `w-full border border-(--color-red-600) bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-yellow) focus:bg-(--color-yellow)/20 transition-colors` : `w-full border border-(--color-orange)/40 bg-white px-4 py-3 text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-yellow) focus:bg-(--color-yellow)/20 transition-colors`}
                     />
                     {fieldErrors.name && (
-                      <p id="rsvp-name-error" className={`font-lato text-xs text-[#9A3B3B] mt-2`}>{fieldErrors.name}</p>
+                      <p id="rsvp-name-error" className={`font-lato text-xs text-(--color-red-600) mt-2`}>{fieldErrors.name}</p>
                     )}
                   </div>
 
@@ -161,10 +181,10 @@ export default function RSVP() {
                       onChange={set("email")}
                       aria-invalid={!!(fieldErrors.email || fieldErrors.contact)}
                       aria-describedby={fieldErrors.email ? "rsvp-email-error" : "rsvp-contact-hint"}
-                      className={fieldErrors.email || fieldErrors.contact ? `w-full border border-[#C97B7B] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-[#9A3B3B] transition-colors` : `w-full border border-[#E8D8CC] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors`}
+                      className={fieldErrors.email || fieldErrors.contact ? `w-full border border-(--color-red-600) bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-yellow) focus:bg-(--color-yellow)/20 transition-colors` : `w-full border border-(--color-orange)/40 bg-white px-4 py-3 text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-yellow) focus:bg-(--color-yellow)/20 transition-colors`}
                     />
                     {fieldErrors.email && (
-                      <p id="rsvp-email-error" className={`font-lato text-xs text-[#9A3B3B] mt-2`}>{fieldErrors.email}</p>
+                      <p id="rsvp-email-error" className={`font-lato text-xs text-(--color-red-600) mt-2`}>{fieldErrors.email}</p>
                     )}
                   </div>
 
@@ -178,11 +198,11 @@ export default function RSVP() {
                       onChange={set("phone")}
                       aria-invalid={!!fieldErrors.contact}
                       aria-describedby="rsvp-contact-hint"
-                      className={fieldErrors.contact ? `w-full border border-[#C97B7B] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-[#9A3B3B] transition-colors` : `w-full border border-[#E8D8CC] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors`}
+                      className={fieldErrors.contact ? `w-full border border-(--color-red-600) bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-yellow) focus:bg-(--color-yellow)/20 transition-colors` : `w-full border border-(--color-orange)/40 bg-white px-4 py-3 text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-yellow) focus:bg-(--color-yellow)/20 transition-colors`}
                     />
                     <p
                       id="rsvp-contact-hint"
-                      className={fieldErrors.contact ? `font-lato text-xs text-[#9A3B3B] mt-2` : `font-lato text-xs text-[#2C2C2C]/50 mt-2`}
+                      className={fieldErrors.contact ? `font-lato text-xs text-(--color-red-600) mt-2` : `font-lato text-xs text-[#2C2C2C]/50 mt-2`}
                     >
                       Please provide at least an email or a contact number.
                     </p>
@@ -190,7 +210,7 @@ export default function RSVP() {
 
                   <div>
                     <label htmlFor="rsvp-status" className={`block font-lato text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] mb-2`}>Will you attend?</label>
-                    <select id="rsvp-status" value={form.status} onChange={set("status")} className={`w-full border border-[#E8D8CC] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors`}>
+                    <select id="rsvp-status" value={form.status} onChange={set("status")} className={`w-full border border-(--color-orange)/40 bg-white px-4 py-3 text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-yellow) focus:bg-(--color-yellow)/20 transition-colors`}>
                       <option value={RsvpStatus.accepted}>{rsvpStatusLabels[RsvpStatus.accepted]}</option>
                       <option value={RsvpStatus.declined}>{rsvpStatusLabels[RsvpStatus.declined]}</option>
                     </select>
@@ -207,7 +227,7 @@ export default function RSVP() {
                       value={form.dietary}
                       onChange={set("dietary")}
                       rows={3}
-                      className="w-full border border-[#E8D8CC] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors resize-none"
+                      className="w-full border border-(--color-orange)/40 bg-white px-4 py-3 text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-yellow) focus:bg-(--color-yellow)/20 transition-colors resize-none"
                     />
                   </div>
 
@@ -222,12 +242,12 @@ export default function RSVP() {
                       value={form.notes}
                       onChange={set("notes")}
                       rows={3}
-                      className="w-full border border-[#E8D8CC] bg-white px-4 py-3 font-lato text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-pink) transition-colors resize-none"
+                      className="w-full border border-(--color-orange)/40 bg-white px-4 py-3 text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-yellow) focus:bg-(--color-yellow)/20 transition-colors resize-none"
                     />
                   </div>
 
                   {error && (
-                    <p className="font-lato text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3">
+                    <p className="font-lato text-sm text-(--color-red-600) bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3">
                       {error}
                     </p>
                   )}

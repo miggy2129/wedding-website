@@ -50,10 +50,10 @@ export default function Hero() {
 
           <a
             href="#rsvp"
-            className="cursor-hover absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center text-center text-(--color-pink)"
+            className="cursor-hover absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center text-center text-(--color-pink)/50 hover:text-(--color-pink) ease-in-out transition-colors hover:underline underline-offset-4"
           >
             <span className="cursor-hover mb-0">confirm attendance</span>
-            <ChevronDown aria-hidden="true" size={35} strokeWidth={1} className="cursor-hover -mt-0 motion-safe:animate-bounce" />
+            <ChevronDown aria-hidden="true" size={33} strokeWidth={1} className="cursor-hover -mt-0 motion-safe:animate-bounce" />
             <ChevronDown aria-hidden="true" size={25} strokeWidth={1} className="cursor-hover -mt-5 motion-safe:animate-bounce" />
           </a>
     </section>

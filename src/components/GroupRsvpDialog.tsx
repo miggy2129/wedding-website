@@ -1,10 +1,15 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { loadGroupMembers, postGroupSubmit } from "@/_services/form";
-import { FormState, GroupMember, GroupUpdate, RsvpResult, RsvpStatus, rsvpStatusLabels } from "@/_types/rsvp";
+import { FormState, GroupMember, GroupUpdate, RsvpResult, RsvpStatus } from "@/_types/rsvp";
 
 const EMAIL_PATTERN = /^\S+@\S+\.\S+$/;
+
+const toggleOptions = [
+  { value: RsvpStatus.accepted, label: "Attending" },
+  { value: RsvpStatus.declined, label: "Not Attending" },
+] as const;
 
 type Row = Omit<GroupUpdate, "id">;
 
@@ -15,13 +20,9 @@ type Props = {
   onDone: (updatedOthers: number) => void;
 };
 
-const toggleOptions = [
-  { value: RsvpStatus.accepted, label: rsvpStatusLabels[RsvpStatus.accepted] },
-  { value: RsvpStatus.declined, label: rsvpStatusLabels[RsvpStatus.declined] },
-] as const;
-
 export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const scrollTopRef = useRef(0);
   const isSubmittingRef = useRef(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -85,6 +86,13 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
     };
   }, []);
 
+  useLayoutEffect(() => {
+    const dialog = dialogRef.current;
+    if (dialog && dialog.scrollTop !== scrollTopRef.current) {
+      dialog.scrollTop = scrollTopRef.current;
+    }
+  });
+
   const updateRow = (id: string, patch: Partial<Row>) => {
     setRows((prev) => ({ ...prev, [id]: { ...prev[id], ...patch } }));
     if ("email" in patch) {
@@ -139,7 +147,10 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
         e.preventDefault();
         if (!isSubmittingRef.current) onBack();
       }}
-      className="relative m-auto w-[calc(100%-2rem)] max-w-xl max-h-[88vh] overflow-x-hidden overflow-y-auto bg-(--color-cream) text-left text-(--color-brown) backdrop:bg-black/60"
+      onScroll={(e) => {
+        scrollTopRef.current = e.currentTarget.scrollTop;
+      }}
+      className="fixed inset-0 m-auto w-[calc(100%-2rem)] max-w-3xl max-h-[88vh] overflow-x-hidden overflow-y-auto bg-(--color-cream) text-left text-(--color-brown) backdrop:bg-black/60"
     >
       <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-16 z-0">
         <Image
@@ -152,35 +163,34 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
       </div>
       <div className="relative z-10 mb-3 px-8 pt-8">
         <h3 id="group-dialog-title" className="pr-24 font-serif text-3xl">
-          Is anyone coming with you?
+        Anyone else in your party?
         </h3>
-        <p className="max-w-[65%] text-sm text-(--color-charcoal)/60 mb-6 pt-3">
-          We’ve linked your response <b className="text-(--color-pink) capitalize">({form.status === RsvpStatus.declined ? "not attending" : "attending"})</b> with your group below.<br/><br/>
-          Simply let us know who else will be joining or missing the celebration, or leave them as-is if they're responding separately.
-        </p>
+      <p className="max-w-[65%] text-sm text-(--color-charcoal)/60 mb-6 pt-3">
+        Your response ({form.status === RsvpStatus.declined ? "not attending" : "attending"})
+        is saved together with anyone you answer for below. Anyone you leave unanswered is skipped.
+      </p>
       </div>
-      <ul className="space-y-5 px-8">
-        {members === null && !loadError && (
-          <>
-            <p role="status" className="text-sm text-[#2C2C2C]/60 mb-4">
-              Finding everyone in your party…
-            </p>
-            <ul aria-hidden="true" className="space-y-5">
-              {Array.from({ length: group.count }, (_, i) => (
-                <li key={i} className="border border-[#E8D8CC] bg-white p-5 animate-pulse">
-                  <div className="flex flex-col gap-3">
-                    <div className="h-7 w-40 bg-[#E8D8CC]" />
-                    <div className="flex">
-                      <div className="h-9 w-24 bg-[#F0E6DF]" />
-                      <div className="h-9 w-24 bg-[#F0E6DF]" />
-                    </div>
+
+      {members === null && !loadError && (
+        <>
+          <p role="status" className="text-sm text-(--color-charcoal)/60 mb-4">
+            Finding everyone in your party…
+          </p>
+          <ul aria-hidden="true" className="space-y-5">
+            {Array.from({ length: group.count }, (_, i) => (
+              <li key={i} className="border border-[#E8D8CC] bg-white p-5 animate-pulse">
+                <div className="flex flex-col gap-3">
+                  <div className="h-7 w-40 bg-[#E8D8CC]" />
+                  <div className="flex">
+                    <div className="h-9 w-24 bg-[#F0E6DF]" />
+                    <div className="h-9 w-24 bg-[#F0E6DF]" />
                   </div>
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </ul>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
 
       {loadError && (
         <div className="text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3">
@@ -200,19 +210,26 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
           const row = rows[member.id];
 
           return (
-            <li
-              key={member.id}
-              className={`border border-(--color-muted) bg-white p-5`}
-            >
-              <div className="relative z-10 flex flex-col gap-3">
+            <li key={member.id} className="border border-(--color-muted) bg-white p-5">
+              <div className="relative z-10 flex md:flex-row flex-col justify-between gap-3">
                 <p className="min-w-0 break-words font-serif text-2xl">
-                    {member.name}
+                  {member.name}
                 </p>
                 <div className="flex flex-col md:flex-row md:place-content-between items-start md:items-center gap-2">
+                  {row.status && (
+                    <button
+                      type="button"
+                      onClick={() => updateRow(member.id, { status: null })}
+                      aria-label={`Clear response for ${member.name}`}
+                      className="md:order-1 order-2 ml-auto md:mr-4 text-[10px] md:py-2 px-1 mt-4 md:mt-0 tracking-[0.15em] uppercase text-(--color-charcoal)/90 underline underline-offset-2 hover:text-(--color-red-600) hover:font-semibold transition-colors cursor-pointer"
+                    >
+                      Clear
+                    </button>
+                  )}
                   <div
                     role="group"
                     aria-label={`Response for ${member.name}`}
-                    className="flex flex-wrap"
+                    className="md:order-2 order-1 flex flex-wrap"
                   >
                     {toggleOptions.map((option) => {
                       const active = row.status === option.value;
@@ -236,23 +253,13 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
                       );
                     })}
                   </div>
-                  {row.status && (
-                    <button
-                      type="button"
-                      onClick={() => updateRow(member.id, { status: null })}
-                      aria-label={`Clear response for ${member.name}`}
-                      className="text-xs py-2 tracking-[0.15em] uppercase text-(--color-charcoal)/90 underline underline-offset-2 hover:text-(--color-red) transition-colors cursor-pointer"
-                    >
-                      Clear
-                    </button>
-                  )}
                 </div>
               </div>
 
               {row.status === RsvpStatus.accepted && (
                 <div className="relative z-10 mt-4 grid gap-3 md:grid-cols-2">
                   <div>
-                    <label htmlFor={`email-${member.id}`} className={`block text-[10px] tracking-[0.2em] uppercase text-(--color-charcoal)/90 mb-1`}>
+                    <label htmlFor={`email-${member.id}`} className={"block text-[10px] tracking-[0.2em] uppercase text-(--color-charcoal)/90 mb-1"}>
                       Email
                     </label>
                     <input
@@ -262,7 +269,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
                       value={row.email}
                       onChange={(e) => updateRow(member.id, { email: e.target.value })}
                       aria-invalid={!!emailErrors[member.id]}
-                      className={emailErrors[member.id] ? `w-full border border-[#C97B7B] bg-white px-3 py-2 text-sm text-[#2C2C2C] focus:outline-none focus:border-[#9A3B3B] transition-colors` : `w-full border border-(--color-green) bg-white px-3 py-2 text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-orange) transition-colors`}
+                      className={emailErrors[member.id] ? "w-full border border-[#C97B7B] bg-white px-3 py-2 text-sm text-(--color-charcoal) focus:outline-none focus:border-(--color-yellow) focus:bg-(--color-yellow)/20 transition-colors" : "w-full border border-(--color-orange)/40 bg-white px-3 py-2 text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-yellow) focus:bg-(--color-yellow)/20 transition-colors"}
                     />
                     {emailErrors[member.id] && (
                       <p className="text-xs text-[#9A3B3B] mt-1">
@@ -271,7 +278,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
                     )}
                   </div>
                   <div>
-                    <label htmlFor={`phone-${member.id}`} className={`block text-[10px] tracking-[0.2em] uppercase text-(--color-charcoal)/90 mb-1`}>
+                    <label htmlFor={`phone-${member.id}`} className={"block text-[10px] tracking-[0.2em] uppercase text-(--color-charcoal)/90 mb-1"}>
                       Phone
                     </label>
                     <input
@@ -280,11 +287,11 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
                       placeholder="Same as yours if blank"
                       value={row.phone}
                       onChange={(e) => updateRow(member.id, { phone: e.target.value })}
-                      className={`w-full border border-(--color-green) bg-white px-3 py-2 text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-orange) transition-colors`}
+                      className={"w-full border border-(--color-orange)/40 bg-white px-3 py-2 text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-yellow) focus:bg-(--color-yellow)/20 transition-colors"}
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <label htmlFor={`dietary-${member.id}`} className={`block text-[10px] tracking-[0.2em] uppercase text-(--color-charcoal)/90 mb-1`}>
+                    <label htmlFor={`dietary-${member.id}`} className={"block text-[10px] tracking-[0.2em] uppercase text-(--color-charcoal)/90 mb-1"}>
                       Dietary restrictions{" "}
                       <span className="normal-case tracking-normal">(optional)</span>
                     </label>
@@ -294,7 +301,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
                       placeholder="None, vegetarian, gluten-free, etc."
                       value={row.dietary}
                       onChange={(e) => updateRow(member.id, { dietary: e.target.value })}
-                      className={`w-full border border-(--color-green) bg-white px-3 py-2 text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-orange) transition-colors`}
+                      className={"w-full border border-(--color-orange)/40 bg-white px-3 py-2 text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-yellow) focus:bg-(--color-yellow)/20 transition-colors"}
                     />
                   </div>
                 </div>
@@ -305,25 +312,25 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
       </ul>
 
       {error && (
-        <p className="text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3 mt-5">
+        <p className="mx-8 font-medium text-sm text-(--color-red-600) bg-(--color-red-600)/10 border border-(--color-red-600)/40 px-4 py-3 mt-5">
           {error}
         </p>
       )}
 
-      <div className="mt-6 flex flex-col items-center gap-5 pb-8 px-8">
+      <div className="mt-6 flex flex-col items-center gap-3 pb-8 px-8">
         <button
           type="button"
           onClick={handleSave}
           disabled={isSubmitting || !members}
           className="flex-1 w-full bg-(--color-pink) text-white text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-[#2C2C2C] transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-(--color-pink)"
         >
-          {isSubmitting ? "Saving..." : "Send Our RSVPs"}
+          {isSubmitting ? "Saving..." : "Save RSVP"}
         </button>
         <button
           type="button"
           onClick={onBack}
           disabled={isSubmitting}
-          className="text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C]/60 hover:text-(--color-pink) transition-colors cursor-pointer disabled:opacity-60 hover:underline underline-offset-4"
+          className="p-2 text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C]/60 hover:text-(--color-pink) transition-colors cursor-pointer disabled:opacity-60 hover:underline underline-offset-4"
         >
           Back
         </button>
