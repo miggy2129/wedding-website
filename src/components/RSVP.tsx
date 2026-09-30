@@ -257,7 +257,7 @@ export default function RSVP() {
         </div>
       </div>
 
-      {/* {group && (
+      {group && (
         <GroupRsvpDialog
           form={form}
           group={group}
@@ -268,10 +268,8 @@ export default function RSVP() {
             setSubmitted(true);
           }}
         />
-      )} */}
-      <TEMPGroupRsvpDialog
-          onBack={() => setGroup(null)}
-      />
+      )}
+      
     </section>
   );
 }
