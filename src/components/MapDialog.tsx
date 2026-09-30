@@ -1,5 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
+import { Check, Copy, ExternalLink, X } from "lucide-react";
 
 type Props = {
   venue: string;
@@ -7,8 +8,8 @@ type Props = {
   maps: string;
 };
 
-const buttonClass =
-  "rounded-full border border-pink px-4 py-2 font-lato text-xs uppercase tracking-widest text-pink transition-colors hover:bg-pink hover:text-white";
+const iconButtonClass =
+  "flex size-9 items-center justify-center rounded-full text-brown/70 transition-colors hover:bg-brown/10 hover:text-pink";
 
 export default function MapDialog({ venue, address, maps }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -22,7 +23,7 @@ export default function MapDialog({ venue, address, maps }: Props) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Clipboard unavailable (e.g. insecure context); the "Open" link still works.
+      // Clipboard unavailable (e.g. insecure context); the open-in-new-tab button still works.
     }
   }
 
@@ -44,19 +45,43 @@ export default function MapDialog({ venue, address, maps }: Props) {
         }}
         className="m-auto w-[min(92vw,56rem)] max-w-none bg-cream p-0 text-left text-brown backdrop:bg-black/70"
       >
-        <div className="flex items-center justify-between gap-4 px-5 py-3">
+        <div className="flex items-start justify-between gap-4 px-5 py-3">
           <div>
             <p className="font-serif text-xl">{venue}</p>
             <p className="font-lato text-xs text-brown/70">{address}</p>
           </div>
-          <button
-            type="button"
-            onClick={() => dialogRef.current?.close()}
-            aria-label="Close map"
-            className="px-2 text-2xl leading-none"
-          >
-            ×
-          </button>
+          <div className="flex shrink-0 items-center gap-1">
+            <button
+              type="button"
+              onClick={copyLink}
+              aria-label="Copy Google Maps link"
+              title={copied ? "Copied!" : "Copy link"}
+              className={iconButtonClass}
+            >
+              {copied ? <Check size={18} aria-hidden="true" /> : <Copy size={18} aria-hidden="true" />}
+            </button>
+            <span role="status" className="sr-only">
+              {copied ? "Link copied" : ""}
+            </span>
+            <button
+              type="button"
+              onClick={() => window.open(maps, "_blank", "noopener,noreferrer")}
+              aria-label="Open in Google Maps (new tab)"
+              title="Open in new tab"
+              className={iconButtonClass}
+            >
+              <ExternalLink size={18} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              onClick={() => dialogRef.current?.close()}
+              aria-label="Close map"
+              title="Close"
+              className={iconButtonClass}
+            >
+              <X size={20} aria-hidden="true" />
+            </button>
+          </div>
         </div>
         <iframe
           src={embedSrc}
@@ -65,23 +90,6 @@ export default function MapDialog({ venue, address, maps }: Props) {
           referrerPolicy="no-referrer-when-downgrade"
           className="block h-[60vh] w-full border-0"
         />
-        <div className="flex flex-wrap items-center justify-end gap-3 px-5 py-3">
-          <button
-            type="button"
-            onClick={copyLink}
-            aria-live="polite"
-            className={buttonClass}
-          >
-            {copied ? "Link copied!" : "Copy link"}
-          </button>
-          <button
-            type="button"
-            onClick={() => window.open(maps, "_blank", "noopener,noreferrer")}
-            className={buttonClass}
-          >
-            Open in Google Maps app
-          </button>
-        </div>
       </dialog>
     </>
   );
