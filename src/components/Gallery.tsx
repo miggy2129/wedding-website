@@ -1,7 +1,7 @@
 import Image from 'next/image'
 
 const IMAGES = [
-  '/images/couple/couple1.jpg',
+  '/images/couple/couple11.jpg',
   '/images/couple/couple8.jpg',
   '/images/couple/couple2.jpg',
   '/images/couple/couple5.jpg',
