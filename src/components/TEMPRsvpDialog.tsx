@@ -9,10 +9,7 @@ const EMAIL_PATTERN = /^\S+@\S+\.\S+$/;
 type Row = Omit<GroupUpdate, "id">;
 
 type Props = {
-  form: FormState;
-  group: { token: string; count: number };
   onBack: () => void;
-  onDone: (updatedOthers: number) => void;
 };
 
 const toggleOptions = [
@@ -20,7 +17,7 @@ const toggleOptions = [
   { value: RsvpStatus.declined, label: rsvpStatusLabels[RsvpStatus.declined] },
 ] as const;
 
-export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) {
+export default function GroupRsvpDialog({ onBack }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const isSubmittingRef = useRef(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,34 +35,63 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
   useEffect(() => {
     let cancelled = false;
 
-    const key = `${group.token}:${loadAttempt}`;
-    if (loadRequest.current?.key !== key) {
-      loadRequest.current = { key, promise: loadGroupMembers(group.token) };
-    }
+    // const key = `${group.token}:${loadAttempt}`;
+    // if (loadRequest.current?.key !== key) {
+    //   loadRequest.current = { key, promise: loadGroupMembers(group.token) };
+    // }
 
-    loadRequest.current.promise
-      .then((result) => {
-        if (cancelled) return;
-
-        if (result.success && result.members) {
-          setRows(
-            Object.fromEntries(
-              result.members.map((m) => [m.id, { status: m.status, email: "", phone: "", dietary: "" }])
-            )
-          );
-          setMembers(result.members);
-        } else {
-          setLoadError(result.message);
+    const testMembers: GroupMember[] = [
+        {
+            id: "1",
+            name: "Litz Mercado",
+            status: null,
+        },
+        {
+            id: "2",
+            name: "Gene Mercado",
+            status: null,
+        },
+        {
+            id: "3",
+            name: "Joaquin Mercado",
+            status: null,
         }
-      })
-      .catch(() => {
-        if (!cancelled) setLoadError("We couldn't load your party. Please try again.");
-      });
+    ];
 
-    return () => {
-      cancelled = true;
-    };
-  }, [group.token, loadAttempt]);
+    setMembers(testMembers);
+
+    setRows(
+      Object.fromEntries(
+        testMembers.map((member) => [
+          member.id,
+          { status: member.status, email: "", phone: "", dietary: "" },
+        ])
+      )
+    );
+
+    // loadRequest.current.promise
+    //   .then((result) => {
+    //     if (cancelled) return;
+
+    //     if (result.success && result.members) {
+    //       setRows(
+    //         Object.fromEntries(
+    //           result.members.map((m) => [m.id, { status: m.status, email: "", phone: "", dietary: "" }])
+    //         )
+    //       );
+    //       setMembers(result.members);
+    //     } else {
+    //       setLoadError(result.message);
+    //     }
+    //   })
+    //   .catch(() => {
+    //     if (!cancelled) setLoadError("We couldn't load your party. Please try again.");
+    //   });
+
+//     return () => {
+//       cancelled = true;
+//     };
+  }, []);
 
   const retryLoad = () => {
     setLoadError(null);
@@ -97,38 +123,38 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
   };
 
   const handleSave = async () => {
-    if (isSubmittingRef.current || !members) return;
+//     if (isSubmittingRef.current || !members) return;
 
-    const errors: Record<string, string> = {};
-    members.forEach((m) => {
-      const email = rows[m.id].email.trim();
-      if (rows[m.id].status && email && !EMAIL_PATTERN.test(email)) {
-        errors[m.id] = "Please enter a valid email address.";
-      }
-    });
-    setEmailErrors(errors);
-    if (Object.keys(errors).length > 0) {
-      setError(null);
-      return;
-    }
+//     const errors: Record<string, string> = {};
+//     members.forEach((m) => {
+//       const email = rows[m.id].email.trim();
+//       if (rows[m.id].status && email && !EMAIL_PATTERN.test(email)) {
+//         errors[m.id] = "Please enter a valid email address.";
+//       }
+//     });
+//     setEmailErrors(errors);
+//     if (Object.keys(errors).length > 0) {
+//       setError(null);
+//       return;
+//     }
 
-    isSubmittingRef.current = true;
-    setIsSubmitting(true);
-    setError(null);
+//     isSubmittingRef.current = true;
+//     setIsSubmitting(true);
+//     setError(null);
 
-    try {
-      const updates: GroupUpdate[] = members.map((m) => ({ id: m.id, ...rows[m.id] }));
-      const results = await postGroupSubmit({ form, token: group.token, updates });
+//     try {
+//       const updates: GroupUpdate[] = members.map((m) => ({ id: m.id, ...rows[m.id] }));
+//       const results = await postGroupSubmit({ form, token: group.token, updates });
 
-      if (results.success) {
-        onDone(results.updatedOthers ?? 0);
-      } else {
-        setError(results.message);
-      }
-    } finally {
-      isSubmittingRef.current = false;
-      setIsSubmitting(false);
-    }
+//       if (results.success) {
+//         onDone(results.updatedOthers ?? 0);
+//       } else {
+//         setError(results.message);
+//       }
+//     } finally {
+//       isSubmittingRef.current = false;
+//       setIsSubmitting(false);
+//     }
   };
 
   return (
@@ -155,49 +181,15 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
           Is anyone coming with you?
         </h3>
         <p className="max-w-[65%] text-sm text-(--color-charcoal)/60 mb-6 pt-3">
-          We’ve linked your response <b className="text-(--color-pink) capitalize">({form.status === RsvpStatus.declined ? "not attending" : "attending"})</b> with your group below.<br/><br/>
+          We’ve linked your response <b className="text-(--color-pink) capitalize">(attending)</b> with your group below.<br/><br/>
           Simply let us know who else will be joining or missing the celebration, or leave them as-is if they're responding separately.
         </p>
       </div>
-      <ul className="space-y-5 px-8">
-        {members === null && !loadError && (
-          <>
-            <p role="status" className="text-sm text-[#2C2C2C]/60 mb-4">
-              Finding everyone in your party…
-            </p>
-            <ul aria-hidden="true" className="space-y-5">
-              {Array.from({ length: group.count }, (_, i) => (
-                <li key={i} className="border border-[#E8D8CC] bg-white p-5 animate-pulse">
-                  <div className="flex flex-col gap-3">
-                    <div className="h-7 w-40 bg-[#E8D8CC]" />
-                    <div className="flex">
-                      <div className="h-9 w-24 bg-[#F0E6DF]" />
-                      <div className="h-9 w-24 bg-[#F0E6DF]" />
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </ul>
-
-      {loadError && (
-        <div className="text-sm text-[#9A3B3B] bg-[#FBEDED] border border-[#F0D3D3] px-4 py-3">
-          <p>{loadError}</p>
-          <button
-            type="button"
-            onClick={retryLoad}
-            className="mt-2 underline underline-offset-2 cursor-pointer"
-          >
-            Try again
-          </button>
-        </div>
-      )}
 
       <ul className="space-y-5 px-8">
-        {(members ?? []).map((member) => {
+        {(members ?? []).map((member, memberIndex, memberList) => {
           const row = rows[member.id];
+          const isLastMember = memberIndex === memberList.length - 1;
 
           return (
             <li
@@ -262,7 +254,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
                       value={row.email}
                       onChange={(e) => updateRow(member.id, { email: e.target.value })}
                       aria-invalid={!!emailErrors[member.id]}
-                      className={emailErrors[member.id] ? `w-full border border-[#C97B7B] bg-white px-3 py-2 text-sm text-[#2C2C2C] focus:outline-none focus:border-[#9A3B3B] transition-colors` : `w-full border border-(--color-green) bg-white px-3 py-2 text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-orange) transition-colors`}
+                      className={emailErrors[member.id] ? `w-full border border-[#C97B7B] bg-white px-3 py-2 text-sm text-(--color-charcoal) focus:outline-none focus:border-[#9A3B3B] transition-colors` : `w-full border border-(--color-green) bg-white px-3 py-2 text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-orange) transition-colors`}
                     />
                     {emailErrors[member.id] && (
                       <p className="text-xs text-[#9A3B3B] mt-1">
@@ -280,7 +272,7 @@ export default function GroupRsvpDialog({ form, group, onBack, onDone }: Props) 
                       placeholder="Same as yours if blank"
                       value={row.phone}
                       onChange={(e) => updateRow(member.id, { phone: e.target.value })}
-                      className={`w-full border border-(--color-green) bg-white px-3 py-2 text-sm text-[#2C2C2C] focus:outline-none focus:border-(--color-orange) transition-colors`}
+                      className={`w-full border border-(--color-green) bg-white px-3 py-2 text-sm text-(--color-charcoal) focus:outline-none focus:border-(--color-orange) transition-colors`}
                     />
                   </div>
                   <div className="md:col-span-2">

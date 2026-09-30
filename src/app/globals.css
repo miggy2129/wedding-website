@@ -115,11 +115,11 @@ body {
 
 * {
   box-sizing: border-box;
-  cursor: url("/images/ginger2.png"), auto;
+  cursor: url("/images/ginger2.png") 0 16, auto;
 }
 
 :is(button, a, input, select, textarea):hover, .cursor-hover {
-  cursor: url("/images/ginger-hover.png"), auto;
+  cursor: url("/images/ginger-hover.png") 0 16, auto;
 }
 
 input,

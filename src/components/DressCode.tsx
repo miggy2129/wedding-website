@@ -43,6 +43,7 @@ export default function DressCode() {
                             <h4 className="text-lg text-(--color-yellow)">Color palette</h4>
                             <p className="text-xs">
                                 No strict color palette! Dress to celebrate in vibrant and bold colors, patterns, and textures.<br/><br/>
+                                The inspiration is to dress like a peacock, a garden flower, or a butterfly. Let nature inspire!<br/><br/>
                                 We’re asking everyone to skip black, white, and any off-white/cream shades.
                             </p>
                         </div>

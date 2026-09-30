@@ -36,7 +36,7 @@ export default function Navbar() {
             <li key={l.href}>
               <a
                 href={l.href}
-                className="font-lato text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] hover:text-(--color-yellow) transition-colors"
+                className="py-2 font-lato text-[11px] tracking-[0.2em] uppercase text-[#2C2C2C] hover:text-(--color-yellow) transition-colors"
               >
                 {l.label}
               </a>

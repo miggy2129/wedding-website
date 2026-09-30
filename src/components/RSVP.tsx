@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { postSubmit } from "@/_services/form";
 import { RsvpStatus, FormState, rsvpStatusLabels } from "@/_types/rsvp";
 import GroupRsvpDialog from "@/components/GroupRsvpDialog";
+import TEMPGroupRsvpDialog from "@/components/TEMPRsvpDialog"
 import Image from "next/image";
 
 type FieldErrors = { name?: string; email?: string; contact?: boolean };
@@ -234,7 +235,7 @@ export default function RSVP() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-(--color-pink) text-white font-lato text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-[#2C2C2C] transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-[#B8966E]"
+                    className="w-full bg-(--color-pink) text-white font-lato text-[11px] tracking-[0.25em] uppercase py-4 hover:bg-[#2C2C2C] transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-(--color-pink)"
                   >
                     {isSubmitting ? "Sending..." : "Send RSVP"}
                   </button>
@@ -256,7 +257,7 @@ export default function RSVP() {
         </div>
       </div>
 
-      {group && (
+      {/* {group && (
         <GroupRsvpDialog
           form={form}
           group={group}
@@ -267,7 +268,10 @@ export default function RSVP() {
             setSubmitted(true);
           }}
         />
-      )}
+      )} */}
+      <TEMPGroupRsvpDialog
+          onBack={() => setGroup(null)}
+      />
     </section>
   );
 }
