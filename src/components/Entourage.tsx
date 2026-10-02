@@ -4,7 +4,7 @@ import {
 } from "@/components/ui/table"
 
 const PRIESTS = [
-  "Rev. Fr. Edmundo A. Tiamson, OFM Cap.", "Rev. Fr. Mark Joseph Santos Lorenzo"
+  "Rev. Fr. Edmundo Tiamson, OFM Cap", "Rev. Fr. Mark Joseph Santos Lorenzo"
 ];
 
 const FATHERS = [
