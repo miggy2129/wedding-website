@@ -3,6 +3,10 @@ import {
   TableHead, TableHeader, TableRow
 } from "@/components/ui/table"
 
+const PRIESTS = [
+  "Rev. Fr. Edmundo A. Tiamson, OFM Cap.", "Rev. Fr. Mark Joseph Santos Lorenzo"
+];
+
 const FATHERS = [
   "Judo Sonaco (+)", "Eugenio Mercado"
 ];
@@ -48,6 +52,25 @@ export default function Entourage() {
         <h2 className="font-serif text-5xl md:text-6xl font-light text-[#2C2C2C] mb-3">
           Entourage
         </h2>
+
+        <div className="my-8">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead colSpan={2}>
+                  <u>Officiating Priests</u>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                {PRIESTS.map((priest, i) => (
+                    <TableCell key={i}>{priest}</TableCell>
+                  ))}
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
 
         <div className="mt-6 mb-6">
           <Table>
